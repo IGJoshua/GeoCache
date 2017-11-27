@@ -420,14 +420,19 @@ void drawArrow(uint8_t direction)
 		//clear the ligths if new direction
 		for (int i = 1; i < 4; ++i)
 			for (int 1 = 1; j < 6; ++j)
-				strip.setPixelColor(i * j, 0);
+				strip.setPixelColor(i * j + 5, strip.Color(0,0,0)));
 
 		//draw forward arrow
 		if (direction == 1)
 		{
-			
+			s
 		}
 	}
 
 	lastDirection = direction;
+}
+
+void setPixelColor(int x, int y, int r, int g, int b)
+{
+
 }
