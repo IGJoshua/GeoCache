@@ -579,13 +579,22 @@ void loop(void)
  }
 }
 
+#define RED 255, 0, 0
+#define GREEN 0, 255, 0
+#define BLUE 0, 0, 255
+#define YELLOW 255, 255, 0
+#define CYAN 0, 255, 255
+#define MAGENTA 255, 0, 255
+#define WHITE 255, 255, 255
+#define BLACK 0, 0, 0
+
 void clearScreen()
 {
 	for (uint8_t x = 0; x < PITCH; ++x)
 	{
 		for (uint8_t y = 0; y < 5; ++y)
 		{
-			setPixelColor(x, y, 0, 0, 0);
+			setPixelColor(x, y, BLACK);
 		}
 	}
 }
@@ -658,41 +667,109 @@ void drawNumber(uint8_t n)
 			switch (i)
 			{
 			case 0:
-				setPixelColor(0, 0, 255, 0, 0);
-				setPixelColor(1, 0, 255, 0, 0);
-				setPixelColor(2, 0, 255, 0, 0);
+				setPixelColor(0, 0, RED);
+				setPixelColor(1, 0, RED);
+				setPixelColor(2, 0, RED);
 				break;
 			case 1:
-				setPixelColor(0, 2, 255, 0, 0);
-				setPixelColor(1, 2, 255, 0, 0);
-				setPixelColor(2, 2, 255, 0, 0);
+				setPixelColor(0, 2, RED);
+				setPixelColor(1, 2, RED);
+				setPixelColor(2, 2, RED);
 				break;
 			case 2:
-				setPixelColor(0, 4, 255, 0, 0);
-				setPixelColor(1, 4, 255, 0, 0);
-				setPixelColor(2, 4, 255, 0, 0);
+				setPixelColor(0, 4, RED);
+				setPixelColor(1, 4, RED);
+				setPixelColor(2, 4, RED);
 				break;
 			case 3:
-				setPixelColor(0, 0, 255, 0, 0);
-				setPixelColor(0, 1, 255, 0, 0);
-				setPixelColor(0, 2, 255, 0, 0);
+				setPixelColor(0, 0, RED);
+				setPixelColor(0, 1, RED);
+				setPixelColor(0, 2, RED);
 				break;
 			case 4:
-				setPixelColor(2, 0, 255, 0, 0);
-				setPixelColor(2, 1, 255, 0, 0);
-				setPixelColor(2, 2, 255, 0, 0);
+				setPixelColor(2, 0, RED);
+				setPixelColor(2, 1, RED);
+				setPixelColor(2, 2, RED);
 				break;
 			case 5:
-				setPixelColor(0, 2, 255, 0, 0);
-				setPixelColor(0, 3, 255, 0, 0);
-				setPixelColor(0, 4, 255, 0, 0);
+				setPixelColor(0, 2, RED);
+				setPixelColor(0, 3, RED);
+				setPixelColor(0, 4, RED);
 				break;
 			case 6:
-				setPixelColor(2, 2, 255, 0, 0);
-				setPixelColor(2, 3, 255, 0, 0);
-				setPixelColor(2, 4, 255, 0, 0);
+				setPixelColor(2, 2, RED);
+				setPixelColor(2, 3, RED);
+				setPixelColor(2, 4, RED);
 				break;
 			}
 		}
 	}
+}
+
+#define DIST_1 15
+#define DIST_2 30
+#define DIST_3 45
+#define DIST_4 60
+#define DIST_5 75
+
+#define DIST_6 100
+#define DIST_7 150
+#define DIST_8 200
+#define DIST_9 250
+#define DIST_10 300
+
+#define DIST_11 400
+#define DIST_12 500
+#define DIST_13 600
+#define DIST_14 700
+#define DIST_15 800
+
+#define DIST_16 1000
+#define DIST_17 2000
+#define DIST_18 5000
+#define DIST_19 10000
+#define DIST_20 50000
+
+void drawDistance(uint32_t d)
+{
+	if (d > DIST_1)
+		setPixelColor(3, 4, GREEN);
+	if (d > DIST_2)
+		setPixelColor(3, 3, GREEN);
+	if (d > DIST_3)
+		setPixelColor(3, 2, GREEN);
+	if (d > DIST_4)
+		setPixelColor(3, 1, GREEN);
+	if (d > DIST_5)
+		setPixelColor(3, 0, GREEN);
+	if (d > DIST_6)
+		setPixelColor(3, 4, YELLOW);
+	if (d > DIST_7)
+		setPixelColor(3, 3, YELLOW);
+	if (d > DIST_8)
+		setPixelColor(3, 2, YELLOW);
+	if (d > DIST_9)
+		setPixelColor(3, 1, YELLOW);
+	if (d > DIST_10)
+		setPixelColor(3, 0, YELLOW);
+	if (d > DIST_11)
+		setPixelColor(3, 4, RED);
+	if (d > DIST_12)
+		setPixelColor(3, 3, RED);
+	if (d > DIST_13)
+		setPixelColor(3, 2, RED);
+	if (d > DIST_14)
+		setPixelColor(3, 1, RED);
+	if (d > DIST_15)
+		setPixelColor(3, 0, RED);
+	if (d > DIST_16)
+		setPixelColor(3, 4, WHITE);
+	if (d > DIST_17)
+		setPixelColor(3, 3, WHITE);
+	if (d > DIST_18)
+		setPixelColor(3, 2, WHITE);
+	if (d > DIST_19)
+		setPixelColor(3, 1, WHITE);
+	if (d > DIST_20)
+		setPixelColor(3, 0, WHITE);
 }
