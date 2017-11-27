@@ -94,6 +94,9 @@ char cstr[GPS_RX_BUFSIZ];
 uint8_t target = 0;		// target number
 float heading = 0.0;	// target heading
 float distance = 0.0;	// target distance
+uint8_t lastDirection = 0;  //stores the last direction
+#define PITCH 8
+
 
 #if GPS_ON
 #include <SoftwareSerial.h>
@@ -228,7 +231,7 @@ by this function do not need to be passed in, since these
 parameters are in global data space.
 
 */
-void setNeoPixel(void)
+void setNeoPixel(int target, int heading, int distance)
 {
 	// add code here
 }
@@ -347,6 +350,77 @@ void getGPSMessage(void)
 
 #endif	// GPS_ON
 
+//set the light board into X,Y format
+void setPixelColor(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b)
+{
+	uint8_t index = (y * PITCH) + x;
+
+	strip.setPixelColor(index, strip.Color(r, g, b));
+}
+
+///draw arrow
+void drawArrow(uint8_t direction)
+{
+	 //run only if the direction has changed
+	if (lastDirection != direction)
+	{
+		//draw forward arrow
+		if (direction == 1)
+		{
+			setPixelColor(5, 0, 0, 0, 255);
+			setPixelColor(6, 0, 0, 0, 255);
+			setPixelColor(4, 1, 0, 0, 255);
+			setPixelColor(5, 1, 0, 0, 255);
+			setPixelColor(6, 1, 0, 0, 255);
+			setPixelColor(7, 1, 0, 0, 255);
+			setPixelColor(5, 2, 0, 0, 255);
+			setPixelColor(6, 2, 0, 0, 255);
+			setPixelColor(5, 3, 0, 0, 255);
+			setPixelColor(6, 3, 0, 0, 255);
+			setPixelColor(5, 4, 0, 0, 255);
+			setPixelColor(6, 4, 0, 0, 255);
+		}
+		//draw forward/right arrow
+		if (direction == 2)
+		{
+			setPixelColor(4, 0, 0, 0, 255);
+			setPixelColor(5, 0, 0, 0, 255);
+			setPixelColor(6, 0, 0, 0, 255);
+			setPixelColor(7, 0, 0, 0, 255);
+			setPixelColor(6, 1, 0, 0, 255);
+			setPixelColor(7, 1, 0, 0, 255);
+			setPixelColor(5, 2, 0, 0, 255);
+			setPixelColor(7, 2, 0, 0, 255);
+			setPixelColor(4, 3, 0, 0, 255);
+			setPixelColor(7, 3, 0, 0, 255);
+		}
+		//draw right arrow
+		if (direction == 3)
+		{
+			setPixelColor(5, 0, 0, 0, 255);
+			setPixelColor(6, 1, 0, 0, 255);
+			setPixelColor(4, 2, 0, 0, 255);
+			setPixelColor(5, 2, 0, 0, 255);
+			setPixelColor(6, 2, 0, 0, 255);
+			setPixelColor(7, 2, 0, 0, 255);
+			setPixelColor(6, 3, 0, 0, 255);
+			setPixelColor(5, 4, 0, 0, 255);
+		}
+		//draw back right arrow
+		if (direction == 4)
+		{
+
+		}
+	}
+
+	lastDirection = direction;
+}
+
+
+
+
+
+
 void setup(void)
 {
 #if TRM_ON
@@ -355,8 +429,11 @@ void setup(void)
 #endif	
 
 #if NEO_ON
-	// init NeoPixel Shield
+	strip.begin();
+	strip.show();
 #endif	
+	drawArrow(3);
+	strip.show();
 
 #if SDC_ON
 	/*
@@ -407,42 +484,11 @@ void loop(void)
 
 #if NEO_ON
 	// set NeoPixel target display
-	setNeoPixel(target, heading, distance);
+ setNeoPixel(target, heading, distance);
 #endif			
 }
 
 
-uint8_t lastDirection = 0;
-///draw arrow
-void drawArrow(uint8_t direction)
-{
-	float brightness = analogRead(Brightness) / 1023;
 
-	//run only if the direction has changed
-	if (lastDirection != direction)
-	{
-		//clear the ligths for a new direction
-		for (int i = 1; i < 4; ++i)
-			for (int 1 = 1; j < 6; ++j)
-				strip.setPixelColor(i * j + 5, strip.Color(0,0,0)));
-				
-		//draw forward arrow
-		if (direction == 1)
-		{
-			setPixelColor(6, 1, 0, 0, 255 * brightness);
-			setPixelColor(5, 2, 0, 0, 255 * brightness);
-			setPixelColor(6, 2, 0, 0, 255 * brightness);
-			setPixelColor(7, 2, 0, 0, 255 * brightness);
-			setPixelColor(6, 3, 0, 0, 255 * brightness);
-		}
-	}
 
-	lastDirection = direction;
-}
 
-void setPixelColor(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b)
-{
-	uint8_t index = (y * PITCH) + x;
-	
-	strip.setPixelColor(index, strip.Color(r, g, b));
-}
