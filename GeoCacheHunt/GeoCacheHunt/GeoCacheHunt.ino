@@ -569,9 +569,16 @@ void loop(void)
  }
 }
 
-
-
-
+void clearScreen()
+{
+	for (uint8_t x = 0; x < PITCH; ++x)
+	{
+		for (uint8_t y = 0; y < 5; ++y)
+		{
+			setPixelColor(x, y, 0, 0, 0);
+		}
+	}
+}
 
 void setPixelColor(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b)
 {
@@ -586,16 +593,16 @@ void setPixelColor(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b)
 // 0 0   Left is 5, Right is 6
 // 000   Bottom row is 2
 
-#define	ZERO	0x01111101
-#define	ONE		0x01010000
-#define	TWO		0x00110111
-#define	THREE	0x01010111
-#define	FOUR	0x01011010
-#define	FIVE	0x01001111
-#define SIX		0x01101111
-#define SEVEN	0x01010001
-#define	EIGHT	0x01111111
-#define	NINE	0x01011111
+#define	ZERO	125	
+#define	ONE		80
+#define	TWO		55
+#define	THREE	87
+#define	FOUR	90
+#define	FIVE	79
+#define SIX		111
+#define SEVEN	81
+#define	EIGHT	127
+#define	NINE	95
 
 void drawNumber(uint8_t n)
 {
@@ -634,39 +641,46 @@ void drawNumber(uint8_t n)
 		break;
 	}
 
-	for (int i = 0; i < 7; ++i)
+	for (uint8_t i = 0; i < 7; ++i)
 	{
 		if ((1 << i) & instructions)
 		{
 			switch (i)
 			{
 			case 0:
-				for (int j = 0; j < 3; ++j)
-					setPixelColor(j, 0, 255, 0, 0);
+				setPixelColor(0, 0, 255, 0, 0);
+				setPixelColor(1, 0, 255, 0, 0);
+				setPixelColor(2, 0, 255, 0, 0);
 				break;
 			case 1:
-				for (int j = 0; j < 3; ++j)
-					setPixelColor(j, 2, 255, 0, 0);
+				setPixelColor(0, 2, 255, 0, 0);
+				setPixelColor(1, 2, 255, 0, 0);
+				setPixelColor(2, 2, 255, 0, 0);
 				break;
 			case 2:
-				for (int j = 0; j < 3; ++j)
-					setPixelColor(j, 5, 255, 0, 0);
+				setPixelColor(0, 4, 255, 0, 0);
+				setPixelColor(1, 4, 255, 0, 0);
+				setPixelColor(2, 4, 255, 0, 0);
 				break;
 			case 3:
-				for (int j = 0; j < 3; ++j)
-					setPixelColor(0, j, 255, 0, 0);
+				setPixelColor(0, 0, 255, 0, 0);
+				setPixelColor(0, 1, 255, 0, 0);
+				setPixelColor(0, 2, 255, 0, 0);
 				break;
 			case 4:
-				for (int j = 0; j < 3; ++j)
-					setPixelColor(2, j, 255, 0, 0);
+				setPixelColor(2, 0, 255, 0, 0);
+				setPixelColor(2, 1, 255, 0, 0);
+				setPixelColor(2, 2, 255, 0, 0);
 				break;
 			case 5:
-				for (int j = 0; j < 3; ++j)
-					setPixelColor(0, j + 2, 255, 0, 0);
+				setPixelColor(0, 2, 255, 0, 0);
+				setPixelColor(0, 3, 255, 0, 0);
+				setPixelColor(0, 4, 255, 0, 0);
 				break;
 			case 6:
-				for (int j = 0; j < 3; ++j)
-					setPixelColor(2, j + 2, 255, 0, 0);
+				setPixelColor(2, 2, 255, 0, 0);
+				setPixelColor(2, 3, 255, 0, 0);
+				setPixelColor(2, 4, 255, 0, 0);
 				break;
 			}
 		}
