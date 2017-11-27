@@ -75,7 +75,7 @@ There may not be sufficient room in the PROGRAM or DATA memory to
 enable all these libraries at the same time.  You must have NEO_ON,
 GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 */
-#define NEO_ON 0		// NeoPixelShield
+#define NEO_ON 1		// NeoPixelShield
 #define TRM_ON 1		// SerialTerminal
 #define SDC_ON 0		// SecureDigital
 #define GPS_ON 1		// Live GPS Message (off = simulated)
@@ -433,7 +433,9 @@ void drawArrow(uint8_t direction)
 	lastDirection = direction;
 }
 
-void setPixelColor(int x, int y, int r, int g, int b)
+void setPixelColor(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b)
 {
-
+	uint8_t index = (y * PITCH) + x;
+	
+	strip.setPixelColor(index, strip.Color(r, g, b));
 }
