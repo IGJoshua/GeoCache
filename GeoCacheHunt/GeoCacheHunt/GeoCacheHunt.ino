@@ -6,9 +6,10 @@ This is skeleton code provided as a project development guideline only.  You
 are not required to follow this coding structure.  You are free to implement
 your project however you wish.
 
-Team Number: ?
+Team Number: 6
 
-Team Members: ?
+Team Members: Joshua Stevens
+              Joshua Suskalo
 
 NOTES:
 You only have 32k of program space and 2k of data space.  You must
