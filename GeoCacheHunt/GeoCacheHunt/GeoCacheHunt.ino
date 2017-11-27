@@ -93,6 +93,7 @@ char cstr[GPS_RX_BUFSIZ];
 uint8_t target = 0;		// target number
 float heading = 0.0;	// target heading
 float distance = 0.0;	// target distance
+float brightness = 1.0;
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, PIN, NEO_GRB + NEO_KHZ800);
 
 #if GPS_ON
@@ -437,5 +438,98 @@ void setPixelColor(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b)
 {
 	uint8_t index = (y * PITCH) + x;
 	
-	strip.setPixelColor(index, strip.Color(r, g, b));
+	strip.setPixelColor(index, strip.Color(r * brightness, g * brightness, b * brightness));
+}
+
+// 000   Top row is 0
+// 0 0   Left is 3, Right is 4
+// 000   Middle row is 1
+// 0 0   Left is 5, Right is 6
+// 000   Bottom row is 2
+
+#define	ZERO	0x01111101
+#define	ONE		0x01010000
+#define	TWO		0x00110111
+#define	THREE	0x01010111
+#define	FOUR	0x01011010
+#define	FIVE	0x01001111
+#define SIX		0x01101111
+#define SEVEN	0x01010001
+#define	EIGHT	0x01111111
+#define	NINE	0x01011111
+
+void drawNumber(uint8_t n)
+{
+	uint8_t instructions = 0;
+	switch (n)
+	{
+	case 0:
+		instructions = ZERO;
+		break;
+	case 1:
+		instructions = ONE;
+		break;
+	case 2:
+		instructions = TWO;
+		break;
+	case 3:
+		instructions = THREE;
+		break;
+	case 4:
+		instructions = FOUR;
+		break;
+	case 5:
+		instructions = FIVE;
+		break;
+	case 6:
+		instructions = SIX;
+		break;
+	case 7:
+		instructions = SEVEN;
+		break;
+	case 8:
+		instructions = EIGHT;
+		break;
+	case 9:
+		instructions = NINE;
+		break;
+	}
+
+	for (int i = 0; i < 7; ++i)
+	{
+		if ((1 << i) & instructions)
+		{
+			switch (i)
+			{
+			case 0:
+				for (int j = 0; j < 3; ++j)
+					setPixelColor(j, 0, 255, 0, 0);
+				break;
+			case 1:
+				for (int j = 0; j < 3; ++j)
+					setPixelColor(j, 2, 255, 0, 0);
+				break;
+			case 2:
+				for (int j = 0; j < 3; ++j)
+					setPixelColor(j, 5, 255, 0, 0);
+				break;
+			case 3:
+				for (int j = 0; j < 3; ++j)
+					setPixelColor(0, j, 255, 0, 0);
+				break;
+			case 4:
+				for (int j = 0; j < 3; ++j)
+					setPixelColor(2, j, 255, 0, 0);
+				break;
+			case 5:
+				for (int j = 0; j < 3; ++j)
+					setPixelColor(0, j + 2, 255, 0, 0);
+				break;
+			case 6:
+				for (int j = 0; j < 3; ++j)
+					setPixelColor(2, j + 2, 255, 0, 0);
+				break;
+			}
+		}
+	}
 }
