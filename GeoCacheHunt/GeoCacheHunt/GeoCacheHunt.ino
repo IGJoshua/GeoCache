@@ -85,6 +85,7 @@ GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 #define GPS_TX	7		// GPS transmit
 #define GPS_RX	8		// GPS receive
 #define Brightness A0
+#define FLAGSELECT 2
 
 // GPS message buffer
 #define GPS_RX_BUFSIZ	128
@@ -94,7 +95,6 @@ char cstr[GPS_RX_BUFSIZ];
 uint8_t target = 0;		// target number
 float heading = 0.0;	// target heading
 float distance = 0.0;	// target distance
-float brightness = .25f;
 #define PITCH 8
 
 
@@ -487,8 +487,7 @@ void drawArrow(uint8_t direction)
 void print()
 {
 	strip.show();
-	for (int i = 0; i < 40; ++i)
-		strip.setPixelColor(i, strip.Color(0, 0, 0));
+	clearScreen();
 }
 
 
@@ -496,6 +495,9 @@ void print()
 
 void setup(void)
 {
+	pinMode(Brightness, INPUT);
+	pinMode(FLAGSELECT, INPUT_PULLUP);
+
 #if TRM_ON
 	// init serial interface
 	Serial.begin(115200);
@@ -532,7 +534,7 @@ void loop(void)
 	///testing
 	drawArrow(random(1, 10));
 	drawNumber(random(0, 10));
-	delay(1000);
+	
 
 
 
@@ -569,6 +571,7 @@ void loop(void)
 
  static unsigned long timestamp = 0;
  //print to the neo pixel if the time has expired
+ strip.setBrightness(analogRead(Brightness) / 4);
  if (timestamp < currentTime - 20)
  {
 	 print();
@@ -591,7 +594,7 @@ void setPixelColor(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b)
 {
 	uint8_t index = (y * PITCH) + x;
 	
-	strip.setPixelColor(index, strip.Color(r * brightness, g * brightness, b * brightness));
+	strip.setPixelColor(index, strip.Color(r, g, b));
 }
 
 // 000   Top row is 0
