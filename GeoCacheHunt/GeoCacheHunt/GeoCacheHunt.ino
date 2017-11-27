@@ -351,14 +351,6 @@ void getGPSMessage(void)
 
 #endif	// GPS_ON
 
-//set the light board into X,Y format
-void setPixelColor(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b)
-{
-	uint8_t index = (y * PITCH) + x;
-
-	strip.setPixelColor(index, strip.Color(r, g, b));
-}
-
 ///draw arrow
 void drawArrow(uint8_t direction)
 {
