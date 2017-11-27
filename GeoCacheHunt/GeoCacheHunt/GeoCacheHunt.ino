@@ -94,8 +94,7 @@ char cstr[GPS_RX_BUFSIZ];
 uint8_t target = 0;		// target number
 float heading = 0.0;	// target heading
 float distance = 0.0;	// target distance
-uint8_t lastDirection = 0;  //stores the last direction
-float brightness = 1.0;
+float brightness = .25f;
 #define PITCH 8
 
 
@@ -351,73 +350,146 @@ void getGPSMessage(void)
 
 #endif	// GPS_ON
 
-//set the light board into X,Y format
-void setPixelColor(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b)
-{
-	uint8_t index = (y * PITCH) + x;
-
-	strip.setPixelColor(index, strip.Color(r, g, b));
-}
 
 ///draw arrow
 void drawArrow(uint8_t direction)
 {
-	 //run only if the direction has changed
-	if (lastDirection != direction)
+	//draw forward arrow
+	if (direction == 1)
 	{
-		//draw forward arrow
-		if (direction == 1)
-		{
-			setPixelColor(5, 0, 0, 0, 255);
-			setPixelColor(6, 0, 0, 0, 255);
-			setPixelColor(4, 1, 0, 0, 255);
-			setPixelColor(5, 1, 0, 0, 255);
-			setPixelColor(6, 1, 0, 0, 255);
-			setPixelColor(7, 1, 0, 0, 255);
-			setPixelColor(5, 2, 0, 0, 255);
-			setPixelColor(6, 2, 0, 0, 255);
-			setPixelColor(5, 3, 0, 0, 255);
-			setPixelColor(6, 3, 0, 0, 255);
-			setPixelColor(5, 4, 0, 0, 255);
-			setPixelColor(6, 4, 0, 0, 255);
-		}
-		//draw forward/right arrow
-		if (direction == 2)
-		{
-			setPixelColor(4, 0, 0, 0, 255);
-			setPixelColor(5, 0, 0, 0, 255);
-			setPixelColor(6, 0, 0, 0, 255);
-			setPixelColor(7, 0, 0, 0, 255);
-			setPixelColor(6, 1, 0, 0, 255);
-			setPixelColor(7, 1, 0, 0, 255);
-			setPixelColor(5, 2, 0, 0, 255);
-			setPixelColor(7, 2, 0, 0, 255);
-			setPixelColor(4, 3, 0, 0, 255);
-			setPixelColor(7, 3, 0, 0, 255);
-		}
-		//draw right arrow
-		if (direction == 3)
-		{
-			setPixelColor(5, 0, 0, 0, 255);
-			setPixelColor(6, 1, 0, 0, 255);
-			setPixelColor(4, 2, 0, 0, 255);
-			setPixelColor(5, 2, 0, 0, 255);
-			setPixelColor(6, 2, 0, 0, 255);
-			setPixelColor(7, 2, 0, 0, 255);
-			setPixelColor(6, 3, 0, 0, 255);
-			setPixelColor(5, 4, 0, 0, 255);
-		}
-		//draw back right arrow
-		if (direction == 4)
-		{
-
-		}
+		setPixelColor(5, 0, 0, 0, 255);
+		setPixelColor(6, 0, 0, 0, 255);
+		setPixelColor(4, 1, 0, 0, 255);
+		setPixelColor(5, 1, 0, 0, 255);
+		setPixelColor(6, 1, 0, 0, 255);
+		setPixelColor(7, 1, 0, 0, 255);
+		setPixelColor(5, 2, 0, 0, 255);
+		setPixelColor(6, 2, 0, 0, 255);
+		setPixelColor(5, 3, 0, 0, 255);
+		setPixelColor(6, 3, 0, 0, 255);
+		setPixelColor(5, 4, 0, 0, 255);
+		setPixelColor(6, 4, 0, 0, 255);
 	}
+	//draw forward/right arrow
+	if (direction == 2)
+	{
+		setPixelColor(4, 0, 0, 0, 255);
+		setPixelColor(5, 0, 0, 0, 255);
+		setPixelColor(6, 0, 0, 0, 255);
+		setPixelColor(7, 0, 0, 0, 255);
+		setPixelColor(6, 1, 0, 0, 255);
+		setPixelColor(7, 1, 0, 0, 255);
+		setPixelColor(5, 2, 0, 0, 255);
+		setPixelColor(7, 2, 0, 0, 255);
+		setPixelColor(4, 3, 0, 0, 255);
+		setPixelColor(7, 3, 0, 0, 255);
+	}
+	//draw right arrow
+	if (direction == 3)
+	{
+		setPixelColor(5, 0, 0, 0, 255);
+		setPixelColor(6, 1, 0, 0, 255);
+		setPixelColor(4, 2, 0, 0, 255);
+		setPixelColor(5, 2, 0, 0, 255);
+		setPixelColor(6, 2, 0, 0, 255);
+		setPixelColor(7, 2, 0, 0, 255);
+		setPixelColor(6, 3, 0, 0, 255);
+		setPixelColor(5, 4, 0, 0, 255);
+	}
+	//draw back right arrow
+	if (direction == 4)
+	{
+		setPixelColor(4, 3, 0, 0, 255);
+		setPixelColor(5, 3, 0, 0, 255);
+		setPixelColor(6, 3, 0, 0, 255);
+		setPixelColor(7, 3, 0, 0, 255);
+		setPixelColor(6, 2, 0, 0, 255);
+		setPixelColor(7, 2, 0, 0, 255);
+		setPixelColor(5, 1, 0, 0, 255);
+		setPixelColor(7, 1, 0, 0, 255);
+		setPixelColor(4, 0, 0, 0, 255);
+		setPixelColor(7, 0, 0, 0, 255);
+	}
+	//draw down arrow
+	if (direction == 5)
+	{
+		setPixelColor(5, 0, 0, 0, 255);
+		setPixelColor(6, 0, 0, 0, 255);
+		setPixelColor(4, 3, 0, 0, 255);
+		setPixelColor(5, 1, 0, 0, 255);
+		setPixelColor(6, 1, 0, 0, 255);
+		setPixelColor(7, 3, 0, 0, 255);
+		setPixelColor(5, 2, 0, 0, 255);
+		setPixelColor(6, 2, 0, 0, 255);
+		setPixelColor(5, 3, 0, 0, 255);
+		setPixelColor(6, 3, 0, 0, 255);
+		setPixelColor(5, 4, 0, 0, 255);
+		setPixelColor(6, 4, 0, 0, 255);
+	}
+	//drw down left arrow
+	if (direction == 6)
+	{
+		setPixelColor(7, 3, 0, 0, 255);
+		setPixelColor(6, 3, 0, 0, 255);
+		setPixelColor(5, 3, 0, 0, 255);
+		setPixelColor(4, 3, 0, 0, 255);
+		setPixelColor(4, 2, 0, 0, 255);
+		setPixelColor(5, 2, 0, 0, 255);
+		setPixelColor(4, 1, 0, 0, 255);
+		setPixelColor(6, 1, 0, 0, 255);
+		setPixelColor(4, 0, 0, 0, 255);
+		setPixelColor(7, 0, 0, 0, 255);
+	}
+	//draw left arrow
+	if (direction == 7)
+	{
+		setPixelColor(6, 0, 0, 0, 255);
+		setPixelColor(5, 1, 0, 0, 255);
+		setPixelColor(4, 2, 0, 0, 255);
+		setPixelColor(5, 2, 0, 0, 255);
+		setPixelColor(6, 2, 0, 0, 255);
+		setPixelColor(7, 2, 0, 0, 255);
+		setPixelColor(5, 3, 0, 0, 255);
+		setPixelColor(6, 4, 0, 0, 255);
 
-	lastDirection = direction;
+
+	}
+	//draw up/left arrow
+	if (direction == 8)
+	{
+		setPixelColor(4, 0, 0, 0, 255);
+		setPixelColor(5, 0, 0, 0, 255);
+		setPixelColor(6, 0, 0, 0, 255);
+		setPixelColor(7, 0, 0, 0, 255);
+		setPixelColor(4, 1, 0, 0, 255);
+		setPixelColor(5, 1, 0, 0, 255);
+		setPixelColor(4, 2, 0, 0, 255);
+		setPixelColor(6, 2, 0, 0, 255);
+		setPixelColor(4, 3, 0, 0, 255);
+		setPixelColor(7, 3, 0, 0, 255);
+	}
+	//draw centered arrow
+	if (direction == 9)
+	{
+		setPixelColor(5, 0, 0, 0, 255);
+		setPixelColor(6, 0, 0, 0, 255);
+		setPixelColor(4, 1, 0, 0, 255);
+		setPixelColor(7, 1, 0, 0, 255);
+		setPixelColor(4, 2, 0, 0, 255);
+		setPixelColor(7, 2, 0, 0, 255);
+		setPixelColor(4, 3, 0, 0, 255);
+		setPixelColor(7, 3, 0, 0, 255);
+		setPixelColor(5, 4, 0, 0, 255);
+		setPixelColor(6, 4, 0, 0, 255);
+	}
 }
 
-
+void print()
+{
+	strip.show();
+	for (int i = 0; i < 40; ++i)
+		strip.setPixelColor(i, strip.Color(0, 0, 0));
+}
 
 
 
@@ -433,8 +505,7 @@ void setup(void)
 	strip.begin();
 	strip.show();
 #endif	
-	drawArrow(3);
-	strip.show();
+	//drawNumber(8);
 
 #if SDC_ON
 	/*
@@ -458,6 +529,7 @@ void setup(void)
 
 void loop(void)
 {
+	unsigned long currentTime = millis();
 	// max 1 second blocking call till GPS message received
 	getGPSMessage();
 
@@ -486,7 +558,15 @@ void loop(void)
 #if NEO_ON
 	// set NeoPixel target display
  setNeoPixel(target, heading, distance);
-#endif			
+#endif	
+
+
+ //print to the neo pixel if the time has expired
+ if (timestamp < currentTime - 20)
+ {
+	 print();
+	 timestamp = currentTime;
+ }
 }
 
 
