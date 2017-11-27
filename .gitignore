@@ -1,2 +1,2 @@
-*.filters
-*.user
+GeoCacheHunt/
+!GeoCacheHunt/GeoCacheHunt.ino
