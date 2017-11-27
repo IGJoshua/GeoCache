@@ -529,6 +529,13 @@ void setup(void)
 
 void loop(void)
 {
+	///testing
+	drawArrow(random(1, 10));
+	drawNumber(random(0, 10));
+	delay(1000);
+
+
+
 	unsigned long currentTime = millis();
 	// max 1 second blocking call till GPS message received
 	getGPSMessage();
@@ -560,7 +567,7 @@ void loop(void)
  setNeoPixel(target, heading, distance);
 #endif	
 
-
+ static unsigned long timestamp = 0;
  //print to the neo pixel if the time has expired
  if (timestamp < currentTime - 20)
  {
