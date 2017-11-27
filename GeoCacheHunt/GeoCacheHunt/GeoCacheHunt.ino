@@ -75,7 +75,7 @@ There may not be sufficient room in the PROGRAM or DATA memory to
 enable all these libraries at the same time.  You must have NEO_ON,
 GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 */
-#define NEO_ON 0		// NeoPixelShield
+#define NEO_ON 1		// NeoPixelShield
 #define TRM_ON 1		// SerialTerminal
 #define SDC_ON 0		// SecureDigital
 #define GPS_ON 1		// Live GPS Message (off = simulated)
@@ -84,6 +84,7 @@ GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 #define NEO_TX	6		// NEO transmit
 #define GPS_TX	7		// GPS transmit
 #define GPS_RX	8		// GPS receive
+#define Brightness A0
 
 // GPS message buffer
 #define GPS_RX_BUFSIZ	128
@@ -93,7 +94,6 @@ char cstr[GPS_RX_BUFSIZ];
 uint8_t target = 0;		// target number
 float heading = 0.0;	// target heading
 float distance = 0.0;	// target distance
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, PIN, NEO_GRB + NEO_KHZ800);
 
 #if GPS_ON
 #include <SoftwareSerial.h>
@@ -416,17 +416,24 @@ uint8_t lastDirection = 0;
 ///draw arrow
 void drawArrow(uint8_t direction)
 {
+	float brightness = analogRead(Brightness) / 1023;
+
+	//run only if the direction has changed
 	if (lastDirection != direction)
 	{
-		//clear the ligths if new direction
+		//clear the ligths for a new direction
 		for (int i = 1; i < 4; ++i)
 			for (int 1 = 1; j < 6; ++j)
 				strip.setPixelColor(i * j + 5, strip.Color(0,0,0)));
-
+				
 		//draw forward arrow
 		if (direction == 1)
 		{
-			s
+			setPixelColor(6, 1, 0, 0, 255 * brightness);
+			setPixelColor(5, 2, 0, 0, 255 * brightness);
+			setPixelColor(6, 2, 0, 0, 255 * brightness);
+			setPixelColor(7, 2, 0, 0, 255 * brightness);
+			setPixelColor(6, 3, 0, 0, 255 * brightness);
 		}
 	}
 
