@@ -77,7 +77,7 @@ GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 */
 #define NEO_ON 1		// NeoPixelShield
 #define TRM_ON 1		// SerialTerminal
-#define SDC_ON 0		// SecureDigital
+#define SDC_ON 1		// SecureDigital
 #define GPS_ON 0		// Live GPS Message (off = simulated)
 
 // define pin usage
@@ -491,9 +491,6 @@ void print()
 	clearScreen();
 }
 
-
-
-
 void setup(void)
 {
 	pinMode(Brightness, INPUT);
@@ -516,6 +513,25 @@ void setup(void)
 	sequential number of the file.  The filename can not be more than 8
 	chars in length (excluding the ".txt").
 	*/
+	SD.begin();
+
+	char *fileName = "MyMap0/.txt";
+	
+	for (int i = 0; i < 100; ++i)
+	{
+		if (i > 0 && i % 10 == 0)
+		{
+			++fileName[5];
+			fileName[6] = '/';
+		}
+		++fileName[6];
+		if (!SD.exists(fileName))
+		{
+//			Serial.println(fileName);
+			SD.open(fileName);
+			break;
+		}
+	}
 #endif
 
 #if GPS_ON
@@ -538,7 +554,7 @@ void loop(void)
 	getGPSMessage();
 
 #if TRM_ON
-	Serial.println(cstr);
+//	Serial.println(cstr);
 #endif	
 
 	// if button pressed, set new target
