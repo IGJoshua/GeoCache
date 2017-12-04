@@ -532,8 +532,6 @@ void setup(void)
 void loop(void)
 {
 	///testing
-	drawArrow(random(1, 10));
-	drawNumber(random(0, 10));
 	
 
 
@@ -574,6 +572,9 @@ void loop(void)
  strip.setBrightness(analogRead(Brightness) / 4);
  if (timestamp < currentTime - 20)
  {
+	drawArrow(random(1, 10));
+	drawNumber(random(0, 10));
+	drawDistance(random(0, 50001));
 	 print();
 	 timestamp = currentTime;
  }
