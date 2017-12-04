@@ -88,6 +88,20 @@ GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 #define FLAGSELECT 2
 #define FRAME_TIME 20
 
+struct GPSMessage
+{
+	int time;
+	bool isValid;
+	bool north;
+	bool east;
+	double latitude;
+	double longitude;
+	uint16_t SOGKnots;
+	float COGDegrees;
+	int date;
+	float MagVar;
+};
+
 // GPS message buffer
 #define GPS_RX_BUFSIZ	128
 char cstr[GPS_RX_BUFSIZ];
@@ -112,6 +126,8 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(40, NEO_TX, NEO_GRB + NEO_KHZ800);
 
 #if SDC_ON
 #include <SD.h>
+
+SDLib::File file;
 #endif
 
 /*
@@ -123,20 +139,6 @@ flags located on Full Sail campus.
 */
 #define GEOLAT0 28.594532
 #define GEOLON0 -81.304437
-
-struct GPSMessage
-{
-	int time;
-	bool isValid;
-	bool north;
-	bool east;
-	signed double latitude;
-	signed double longitude;
-	uint16_t SOGKnots;
-	float COGDegrees;
-	int date;
-	float MagVar;
-};
 
 #if GPS_ON
 /*
@@ -254,7 +256,24 @@ void setNeoPixel(int target, int heading, int distance)
 	drawNumber(target);
 	//display distance
 	drawDistance(distance);
-	//TODO calculate arrow to show based off heading
+	//calculate arrow to show based off heading
+
+	// If on top of thing, print that it's here
+	if (distance < 15)
+	{
+		drawArrow(0);
+		return;
+	}
+
+	// TODO: If stopped, draw the X
+	if (false)
+	{
+		drawArrow(10);
+		return;
+	}
+
+	// Draw the correct arrow otherwise
+	drawArrow(1 + map(heading, 0, 360, 0, 9));
 
 }
 
@@ -524,8 +543,18 @@ void print()
 	clearScreen();
 }
 
-
-
+#if SDC_ON
+void writeToSD(uint16_t bearing, uint32_t distance)
+{
+	char line[40];
+	char lat[16];
+	char lng[16];
+	dtostrf(message.latitude, 8, 6, lat);
+	dtostrf(message.longitude, 8, 6, lng);
+	sprintf(line, "%s,%s,%d.%d\n", lat, lng, bearing, distance);
+	file.write(line, strlen(line));
+}
+#endif
 
 void setup(void)
 {
@@ -550,7 +579,24 @@ void setup(void)
 	sequential number of the file.  The filename can not be more than 8
 	chars in length (excluding the ".txt").
 	*/
-	//TODO save walk to .txt
+	SD.begin();
+
+	char *fileName = "MyMap0/.txt";
+	
+	for (int i = 0; i < 100; ++i)
+	{
+		if (i > 0 && i % 10 == 0)
+		{
+			++fileName[5];
+			fileName[6] = '/';
+		}
+		++fileName[6];
+		if (!SD.exists(fileName))
+		{
+			file = SD.open(fileName);
+			break;
+		}
+	}
 #endif
 
 #if GPS_ON
@@ -566,16 +612,12 @@ void setup(void)
 
 void loop(void)
 {
-	///testing
-	drawArrow(random(1, 11));
-	drawNumber(random(0, 10));
-	
 	unsigned long currentTime = millis();
 	// max 1 second blocking call till GPS message received
 	getGPSMessage();
 
 #if TRM_ON
-	Serial.println(cstr);
+//	Serial.println(cstr);
 #endif	
 
 	// if button pressed, set new target
@@ -591,6 +633,8 @@ void loop(void)
 
 #if SDC_ON
 		// write current position to SecureDigital then flush
+//		writeToSD(heading, distance);
+//		file.flush();
 #endif
 
 		break;
@@ -598,22 +642,16 @@ void loop(void)
 
 #if NEO_ON
 	// set NeoPixel target display
-	setNeoPixel(target, heading, distance);
+//	setNeoPixel(target, heading, distance);
 
 	static unsigned long timestamp = 0;
 	//print to the neo pixel if the time has expired
 	strip.setBrightness(analogRead(Brightness) / 4);
 
-	if (timestamp < currentTime)
-	{
-		drawArrow(random(1, 10));
-		drawNumber(random(0, 10));
-		drawDistance(random(0, 2500));
+	setNeoPixel(random(0, 10), random(0, 360), random(0, 550));
 
-		print();
+	print();
 
-		timestamp = currentTime + FRAME_TIME + 480;
-	}
 #endif	
 }
 
