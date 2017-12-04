@@ -183,6 +183,8 @@ Decimal degrees coordinate.
 float degMin2DecDeg(char *cind, char *ccor)
 {
 	float decimalDegrees = 0.0;
+	float degrees = ccor[0] * 10 + ccor[1];
+	float minutes = ccor[2] * 10 + ccor[3] + ccor[5] * 0.1f + ccor[6] * 0.01f + ccor[7] * 0.001f + ccor[8] * 0.0001f;
 
 
 
@@ -207,10 +209,13 @@ distance in feet (3959 earth radius in miles * 5280 feet per mile)
 float calcDistance(float flat1, float flon1, float flat2, float flon2)
 {
 	float distance = 0.0;
-
+	float dLon = abs(flon1 - flon2);
+	float dLat = abs(flat1 - flat2);
+	float a = (sin(dLat / 2)) * (sin(dLat / 2)) + cos(flat1) * cos(flat2) * (sin(dLon / 2)) * (sin(dLon / 2));
+	float c = 2 * atan2(sqrt(a), sqrt(1 - a));
 	// add code here
 
-	return(distance);
+	return(c * 3959 * 5280);
 }
 
 /**************************************************
@@ -227,11 +232,7 @@ angle in decimal degrees from magnetic north (NOTE: arc tangent returns range of
 **************************************************/
 float calcBearing(float flat1, float flon1, float flat2, float flon2)
 {
-	float bearing = 0.0;
-
-	// add code here
-
-	return(bearing);
+	return(atan2(sin(flon1 - flon2) * cos(flat2), cos(flat1) * sin(flat2) - sin(flat1) * cos(flon1 - flon2)));
 }
 
 /*************************************************
