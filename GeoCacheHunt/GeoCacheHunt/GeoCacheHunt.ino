@@ -96,6 +96,7 @@ char cstr[GPS_RX_BUFSIZ];
 uint8_t target = 0;		// target number
 float heading = 0.0;	// target heading
 float distance = 0.0;	// target distance
+GPSMessage message;
 #define PITCH 8
 
 
@@ -122,6 +123,20 @@ flags located on Full Sail campus.
 */
 #define GEOLAT0 28.594532
 #define GEOLON0 -81.304437
+
+struct GPSMessage
+{
+	int time;
+	bool isValid;
+	bool north;
+	bool east;
+	signed double latitude;
+	signed double longitude;
+	uint16_t SOGKnots;
+	float COGDegrees;
+	int date;
+	float MagVar;
+};
 
 #if GPS_ON
 /*
@@ -167,11 +182,11 @@ Decimal degrees coordinate.
 **************************************************/
 float degMin2DecDeg(char *cind, char *ccor)
 {
-	float degrees = 0.0;
+	float decimalDegrees = 0.0;
 
-	// add code here
 
-	return(degrees);
+
+	return(decimalDegrees);
 }
 
 /**************************************************
@@ -234,7 +249,12 @@ parameters are in global data space.
 */
 void setNeoPixel(int target, int heading, int distance)
 {
-	// add code here
+	//Set the target
+	drawNumber(target);
+	//display distance
+	drawDistance(distance);
+	//TODO calculate arrow to show based off heading
+
 }
 
 #endif	// NEO_ON
@@ -469,7 +489,7 @@ void drawArrow(uint8_t direction)
 		setPixelColor(4, 3, 0, 0, 255);
 		setPixelColor(7, 3, 0, 0, 255);
 	}
-	//draw centered arrow
+	//draw centered cirlce
 	if (direction == 9)
 	{
 		setPixelColor(5, 0, 0, 0, 255);
@@ -482,6 +502,18 @@ void drawArrow(uint8_t direction)
 		setPixelColor(7, 3, 0, 0, 255);
 		setPixelColor(5, 4, 0, 0, 255);
 		setPixelColor(6, 4, 0, 0, 255);
+	}
+	//draw not moving x
+	if (direction == 10)
+	{
+		setPixelColor(4, 0, 0, 0, 255);
+		setPixelColor(7, 0, 0, 0, 255);
+		setPixelColor(6, 1, 0, 0, 255);
+		setPixelColor(5, 1, 0, 0, 255);
+		setPixelColor(5, 2, 0, 0, 255);
+		setPixelColor(6, 2, 0, 0, 255);
+		setPixelColor(4, 3, 0, 0, 255);
+		setPixelColor(7, 3, 0, 0, 255);
 	}
 }
 
@@ -505,6 +537,7 @@ void setup(void)
 	strip.begin();
 	strip.show();
 #endif	
+
 
 #if SDC_ON
 	/*
@@ -548,6 +581,8 @@ void setup(void)
 void loop(void)
 {
 	///testing
+	drawArrow(random(1, 11));
+	drawNumber(random(0, 10));
 	
 	unsigned long currentTime = millis();
 	// max 1 second blocking call till GPS message received
@@ -622,6 +657,9 @@ void setPixelColor(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b)
 	
 	strip.setPixelColor(index, strip.Color(r, g, b));
 }
+
+
+#pragma region DrawFlagNumber
 
 // 000   Top row is 0
 // 0 0   Left is 3, Right is 4
@@ -723,6 +761,10 @@ void drawNumber(uint8_t n)
 	}
 }
 
+#pragma endregion
+
+#pragma region DrawDistance
+
 #define DIST_1 15
 #define DIST_2 30
 #define DIST_3 45
@@ -789,4 +831,5 @@ void drawDistance(uint32_t d)
 		setPixelColor(3, 1, WHITE);
 	if (d > DIST_20)
 		setPixelColor(3, 0, WHITE);
+#pragma endregion
 }
