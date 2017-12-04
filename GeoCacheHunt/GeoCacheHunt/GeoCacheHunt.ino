@@ -77,7 +77,7 @@ GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 */
 #define NEO_ON 1		// NeoPixelShield
 #define TRM_ON 1		// SerialTerminal
-#define SDC_ON 0		// SecureDigital
+#define SDC_ON 1		// SecureDigital
 #define GPS_ON 0		// Live GPS Message (off = simulated)
 
 // define pin usage
@@ -543,11 +543,15 @@ void print()
 }
 
 #if SDC_ON
-void writeToSD()
+void writeToSD(uint16_t bearing, uint32_t distance)
 {
-	char line[33] = "-lat.latlat,-lng.lnglng,hed.dis\n";
-//	file.write(line, strlen(line));
-	Serial.print(line);
+	char line[40];
+	char lat[16];
+	char lng[16];
+	dtostrf(message.latitude, 8, 6, lat);
+	dtostrf(message.longitude, 8, 6, lng);
+	sprintf(line, "%s,%s,%d.%d\n", lat, lng, bearing, distance);
+	file.write(line, strlen(line));
 }
 #endif
 
@@ -588,11 +592,9 @@ void setup(void)
 		++fileName[6];
 		if (!SD.exists(fileName))
 		{
-			Serial.println(fileName);
-//			file = SD.open(fileName);
+			file = SD.open(fileName);
 			break;
 		}
-		writeToSD();
 	}
 #endif
 
@@ -630,6 +632,8 @@ void loop(void)
 
 #if SDC_ON
 		// write current position to SecureDigital then flush
+//		writeToSD(heading, distance);
+//		file.flush();
 #endif
 
 		break;
