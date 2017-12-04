@@ -78,7 +78,7 @@ GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 #define NEO_ON 1		// NeoPixelShield
 #define TRM_ON 1		// SerialTerminal
 #define SDC_ON 1		// SecureDigital
-#define GPS_ON 1		// Live GPS Message (off = simulated)
+#define GPS_ON 0		// Live GPS Message (off = simulated)
 
 // define pin usage
 #define NEO_TX	6		// NEO transmit
@@ -86,6 +86,7 @@ GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 #define GPS_RX	8		// GPS receive
 #define Brightness A0
 #define FLAGSELECT 2
+#define FRAME_TIME 20
 
 // GPS message buffer
 #define GPS_RX_BUFSIZ	128
@@ -95,6 +96,7 @@ char cstr[GPS_RX_BUFSIZ];
 uint8_t target = 0;		// target number
 float heading = 0.0;	// target heading
 float distance = 0.0;	// target distance
+GPSMessage message;
 #define PITCH 8
 
 
@@ -121,6 +123,20 @@ flags located on Full Sail campus.
 */
 #define GEOLAT0 28.594532
 #define GEOLON0 -81.304437
+
+struct GPSMessage
+{
+	int time;
+	bool isValid;
+	bool north;
+	bool east;
+	signed double latitude;
+	signed double longitude;
+	uint16_t SOGKnots;
+	float COGDegrees;
+	int date;
+	float MagVar;
+};
 
 #if GPS_ON
 /*
@@ -166,11 +182,11 @@ Decimal degrees coordinate.
 **************************************************/
 float degMin2DecDeg(char *cind, char *ccor)
 {
-	float degrees = 0.0;
+	float decimalDegrees = 0.0;
 
-	// add code here
 
-	return(degrees);
+
+	return(decimalDegrees);
 }
 
 /**************************************************
@@ -553,9 +569,6 @@ void loop(void)
 	drawArrow(random(1, 11));
 	drawNumber(random(0, 10));
 	
-
-
-
 	unsigned long currentTime = millis();
 	// max 1 second blocking call till GPS message received
 	getGPSMessage();
@@ -584,17 +597,23 @@ void loop(void)
 
 #if NEO_ON
 	// set NeoPixel target display
- setNeoPixel(target, heading, distance);
-#endif	
+	setNeoPixel(target, heading, distance);
 
- static unsigned long timestamp = 0;
- //print to the neo pixel if the time has expired
- strip.setBrightness(analogRead(Brightness) / 4);
- if (timestamp < currentTime - 20)
- {
-	 print();
-	 timestamp = currentTime;
- }
+	static unsigned long timestamp = 0;
+	//print to the neo pixel if the time has expired
+	strip.setBrightness(analogRead(Brightness) / 4);
+
+	if (timestamp < currentTime)
+	{
+		drawArrow(random(1, 10));
+		drawNumber(random(0, 10));
+		drawDistance(random(0, 2500));
+
+		print();
+
+		timestamp = currentTime + FRAME_TIME + 480;
+	}
+#endif	
 }
 
 #define RED 255, 0, 0
