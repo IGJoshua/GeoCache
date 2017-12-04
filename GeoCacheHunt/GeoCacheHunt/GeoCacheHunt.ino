@@ -77,7 +77,7 @@ GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 */
 #define NEO_ON 1		// NeoPixelShield
 #define TRM_ON 1		// SerialTerminal
-#define SDC_ON 0		// SecureDigital
+#define SDC_ON 1		// SecureDigital
 #define GPS_ON 1		// Live GPS Message (off = simulated)
 
 // define pin usage
@@ -233,7 +233,12 @@ parameters are in global data space.
 */
 void setNeoPixel(int target, int heading, int distance)
 {
-	// add code here
+	//Set the target
+	drawNumber(target);
+	//display distance
+	drawDistance(distance);
+	//TODO calculate arrow to show based off heading
+
 }
 
 #endif	// NEO_ON
@@ -468,7 +473,7 @@ void drawArrow(uint8_t direction)
 		setPixelColor(4, 3, 0, 0, 255);
 		setPixelColor(7, 3, 0, 0, 255);
 	}
-	//draw centered arrow
+	//draw centered cirlce
 	if (direction == 9)
 	{
 		setPixelColor(5, 0, 0, 0, 255);
@@ -481,6 +486,18 @@ void drawArrow(uint8_t direction)
 		setPixelColor(7, 3, 0, 0, 255);
 		setPixelColor(5, 4, 0, 0, 255);
 		setPixelColor(6, 4, 0, 0, 255);
+	}
+	//draw not moving x
+	if (direction == 10)
+	{
+		setPixelColor(4, 0, 0, 0, 255);
+		setPixelColor(7, 0, 0, 0, 255);
+		setPixelColor(6, 1, 0, 0, 255);
+		setPixelColor(5, 1, 0, 0, 255);
+		setPixelColor(5, 2, 0, 0, 255);
+		setPixelColor(6, 2, 0, 0, 255);
+		setPixelColor(4, 3, 0, 0, 255);
+		setPixelColor(7, 3, 0, 0, 255);
 	}
 }
 
@@ -507,7 +524,7 @@ void setup(void)
 	strip.begin();
 	strip.show();
 #endif	
-	//drawNumber(8);
+
 
 #if SDC_ON
 	/*
@@ -516,6 +533,7 @@ void setup(void)
 	sequential number of the file.  The filename can not be more than 8
 	chars in length (excluding the ".txt").
 	*/
+	//TODO save walk to .txt
 #endif
 
 #if GPS_ON
@@ -532,7 +550,7 @@ void setup(void)
 void loop(void)
 {
 	///testing
-	drawArrow(random(1, 10));
+	drawArrow(random(1, 11));
 	drawNumber(random(0, 10));
 	
 
@@ -605,6 +623,9 @@ void setPixelColor(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b)
 	
 	strip.setPixelColor(index, strip.Color(r, g, b));
 }
+
+
+#pragma region DrawFlagNumber
 
 // 000   Top row is 0
 // 0 0   Left is 3, Right is 4
@@ -706,6 +727,10 @@ void drawNumber(uint8_t n)
 	}
 }
 
+#pragma endregion
+
+#pragma region DrawDistance
+
 #define DIST_1 15
 #define DIST_2 30
 #define DIST_3 45
@@ -772,4 +797,5 @@ void drawDistance(uint32_t d)
 		setPixelColor(3, 1, WHITE);
 	if (d > DIST_20)
 		setPixelColor(3, 0, WHITE);
+#pragma endregion
 }
