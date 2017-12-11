@@ -553,6 +553,7 @@ void writeToSD(uint16_t bearing, uint32_t distance)
 	dtostrf(message.longitude, 8, 6, lng);
 	sprintf(line, "%s,%s,%d.%d\n", lat, lng, bearing, distance);
 	file.write(line, strlen(line));
+	file.flush();
 }
 #elif
 {
@@ -636,9 +637,8 @@ void loop(void)
 		// calculated destination distance
 
 #if SDC_ON
-		// write current position to SecureDigital then flush
-//		writeToSD(heading, distance);
-//		file.flush();
+		// write current position to SecureDigital
+		writeToSD(heading, distance);
 #endif
 
 		break;
