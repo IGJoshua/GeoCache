@@ -184,13 +184,14 @@ Return:
 Decimal degrees coordinate.
 
 **************************************************/
-float degMin2DecDeg(char *cind, char *ccor)
+char *degMin2DecDeg(char *cind, char *ccor)
 {
-	//DONE
-	float decimalDegrees = 0.0;
-	float degrees = ccor[0] * 10 + ccor[1];
-	float minutes = ccor[2] * 10 + ccor[3] + ccor[5] * 0.1f + ccor[6] * 0.01f + ccor[7] * 0.001f + ccor[8] * 0.0001f;
-	return(decimalDegrees);
+//	float decimalDegrees = 0.0;
+//	float degrees = ccor[0] * 10 + ccor[1];
+//	float minutes = ccor[2] * 10 + ccor[3] + ccor[5] * 0.1f + ccor[6] * 0.01f + ccor[7] * 0.001f + ccor[8] * 0.0001f;
+//	return(decimalDegrees);
+	// TODO: For real this time
+	return(NULL);
 }
 
 /**************************************************
@@ -250,7 +251,7 @@ by this function do not need to be passed in, since these
 parameters are in global data space.
 
 */
-void setNeoPixel(int target, int heading, int distance)
+void setNeoPixel(int target, int heading, int distance, float speed)
 {
 	//Set the target
 	drawNumber(target);
@@ -264,7 +265,7 @@ void setNeoPixel(int target, int heading, int distance)
 		return;
 	}
 	// TODO: If stopped, draw the X
-	if (false)
+	if (speed < 0.01f)
 	{
 		drawArrow(10);
 		return;
@@ -626,10 +627,12 @@ void loop(void)
 	}
 
 #endif	
+	float speed = 0.0f;
 
 	// if GPRMC message (3rd letter = R)
 	if (cstr[3] == 'R')
 	{
+		/*
 		char * current;
 		char * current2;
 		// parse message parameters
@@ -659,11 +662,28 @@ void loop(void)
 		
 		// calculated destination distance
 		distance = calcDistance(message.latitude, message.longitude, GEOLAT0, GEOLON0);
+		*/
 
-#if SDC_ON
+		char *msg[9];
+
+		msg[0] = strtok(cstr, ",");
+		for (int i = 1; i < 9; ++i)
+		{
+			msg[i] = strtok(NULL, ",");
+		}
+
+		speed = strtod(msg[7], NULL);
+		float head = strtod(msg[8], NULL);
+
+		message.latitude = strtod(degMin2DecDeg(msg[3], msg[4]), NULL);
+		message.longitude = strtod(degMin2DecDeg(msg[5], msg[6]), NULL);
+
+		heading = calcBearing(message.latitude, message.longitude, GEOLAT0, GEOLON0) - head;
+
+		distance = calcDistance(message.latitude, message.longitude, GEOLAT0, GEOLON0);
+
 		// write current position to SecureDigital
 		writeToSD(heading, distance);
-#endif
 
 	}
 
@@ -681,7 +701,7 @@ void loop(void)
 		++selectedFlag %= FLAGCOUNT;
 	}
 
-	setNeoPixel(selectedFlag, heading, distance);
+	setNeoPixel(selectedFlag, heading, distance, speed);
 
 	print();
 
