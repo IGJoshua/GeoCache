@@ -79,7 +79,7 @@ GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 #define NEO_ON 1		// NeoPixelShield
 #define TRM_ON 1		// SerialTerminal
 #define SDC_ON 1		// SecureDigital
-#define GPS_ON 0		// Live GPS Message (off = simulated)
+#define GPS_ON 1		// Live GPS Message (off = simulated)
 
 // define pin usage
 #define NEO_TX	6		// NEO transmit
@@ -635,8 +635,8 @@ void loop(void)
 		// parse message parameters
 
 		current = strtok(cstr, ",");
-		current = strtok(cstr, ",");
-		current = strtok(cstr, ",");
+		current = strtok(NULL, ",");
+		current = strtok(NULL, ",");
 		//Latitude
 		current = strtok(NULL, ",");
 		Serial.println(current);
