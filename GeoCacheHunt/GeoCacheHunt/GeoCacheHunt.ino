@@ -184,14 +184,15 @@ Return:
 Decimal degrees coordinate.
 
 **************************************************/
-char *degMin2DecDeg(char *cind, char *ccor)
+float degMin2DecDeg(char *cind, char *ccor)
 {
-//	float decimalDegrees = 0.0;
 //	float degrees = ccor[0] * 10 + ccor[1];
 //	float minutes = ccor[2] * 10 + ccor[3] + ccor[5] * 0.1f + ccor[6] * 0.01f + ccor[7] * 0.001f + ccor[8] * 0.0001f;
 //	return(decimalDegrees);
 	// TODO: For real this time
-	return(NULL);
+	float degmin = strtod(ccor, NULL);
+	float degrees = (int)(degmin / 100.0f);
+	return(degrees + ((degmin - (degrees * 100)) / 60.0f));
 }
 
 /**************************************************
@@ -667,9 +668,11 @@ void loop(void)
 		char *msg[9];
 
 		msg[0] = strtok(cstr, ",");
+		Serial.println(msg[0]);
 		for (int i = 1; i < 9; ++i)
 		{
 			msg[i] = strtok(NULL, ",");
+			Serial.println(msg[i]);
 		}
 
 		speed = strtod(msg[7], NULL);
