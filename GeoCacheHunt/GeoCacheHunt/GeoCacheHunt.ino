@@ -77,7 +77,7 @@ GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 */
 #define NEO_ON 1		// NeoPixelShield
 #define TRM_ON 1		// SerialTerminal
-#define SDC_ON 1		// SecureDigital
+#define SDC_ON 0		// SecureDigital
 #define GPS_ON 0		// Live GPS Message (off = simulated)
 
 // define pin usage
@@ -86,6 +86,7 @@ GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 #define GPS_RX	8		// GPS receive
 #define Brightness A0
 #define FLAGSELECT 2
+#define FLAGCOUNT 4 // This has a max value of 10
 #define FRAME_TIME 20
 
 struct GPSMessage
@@ -555,7 +556,7 @@ void writeToSD(uint16_t bearing, uint32_t distance)
 	file.write(line, strlen(line));
 	file.flush();
 }
-#elif
+#else
 {
 	// Intentional stub
 }
@@ -622,7 +623,13 @@ void loop(void)
 	getGPSMessage();
 
 #if TRM_ON
-//	Serial.println(cstr);
+	Serial.println(cstr);
+
+	if (digitalRead(FLAGSELECT) == LOW)
+	{
+		Serial.println("Button was pressed this iteration!");
+	}
+
 #endif	
 
 	// if button pressed, set new target
@@ -649,10 +656,16 @@ void loop(void)
 //	setNeoPixel(target, heading, distance);
 
 	static unsigned long timestamp = 0;
+	static uint8_t selectedFlag = 0;
 	//print to the neo pixel if the time has expired
 	strip.setBrightness(analogRead(Brightness) / 4);
 
-	setNeoPixel(random(0, 10), random(0, 360), random(0, 550));
+	if (digitalRead(FLAGSELECT) == LOW)
+	{
+		++selectedFlag %= FLAGCOUNT;
+	}
+
+	setNeoPixel(selectedFlag, random(0, 360), random(0, 550));
 
 	print();
 
