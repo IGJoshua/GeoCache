@@ -78,7 +78,7 @@ GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 #include <string.h>
 #define NEO_ON 1		// NeoPixelShield
 #define TRM_ON 1		// SerialTerminal
-#define SDC_ON 0		// SecureDigital
+#define SDC_ON 1		// SecureDigital
 #define GPS_ON 0		// Live GPS Message (off = simulated)
 
 // define pin usage
@@ -216,7 +216,7 @@ float calcDistance(float flat1, float flon1, float flat2, float flon2)
 	float dLat = abs(flat1 - flat2);
 	float a = (sin(dLat / 2)) * (sin(dLat / 2)) + cos(flat1) * cos(flat2) * (sin(dLon / 2)) * (sin(dLon / 2));
 	float c = 2 * atan2(sqrt(a), sqrt(1 - a));
-	return(c * 3959 * 5280);
+	return(c * 6371);
 }
 
 /**************************************************
@@ -257,26 +257,20 @@ void setNeoPixel(int target, int heading, int distance)
 	//display distance
 	drawDistance(distance);
 	//calculate arrow to show based off heading
-	Serial.println("here");
 	// If on top of thing, print that it's here
 	if (distance < 15)
 	{
-		Serial.println(distance);
 		drawArrow(9);
 		return;
 	}
-	Serial.println("here2");
 	// TODO: If stopped, draw the X
 	if (false)
 	{
 		drawArrow(10);
 		return;
 	}
-	Serial.println("here3");
 	// Draw the correct arrow otherwise
-	int i = 1 + map(heading, 0, 360, 0, 9);
-	drawArrow(i);
-	Serial.println(i);
+	drawArrow(1 + map(heading, 0, 360, 0, 9));
 }
 
 #endif	// NEO_ON
@@ -641,8 +635,11 @@ void loop(void)
 		// parse message parameters
 
 		current = strtok(cstr, ",");
+		current = strtok(cstr, ",");
+		current = strtok(cstr, ",");
 		//Latitude
 		current = strtok(NULL, ",");
+		Serial.println(current);
 		//N/S
 		current2 = strtok(NULL, ",");
 		message.north = *current2 == 'N';
@@ -650,6 +647,7 @@ void loop(void)
 		message.latitude = degMin2DecDeg(current2, current);
 		//Longitude
 		current = strtok(NULL, ",");
+		Serial.println(current);
 		//E/W
 		current2 = strtok(NULL, ",");
 		message.east = *current2 == 'E';
