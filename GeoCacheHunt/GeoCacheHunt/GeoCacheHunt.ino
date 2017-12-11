@@ -600,7 +600,7 @@ void setup(void)
 		++fileName[6];
 		if (!SD.exists(fileName))
 		{
-			file = SD.open(fileName);
+			file = SD.open(fileName, FILE_WRITE);
 			break;
 		}
 	}
@@ -662,10 +662,8 @@ void loop(void)
 		// calculated destination distance
 		distance = calcDistance(message.latitude, message.longitude, GEOLAT0, GEOLON0);
 
-#if SDC_ON
 		// write current position to SecureDigital
 		writeToSD(heading, distance);
-#endif
 
 	}
 
