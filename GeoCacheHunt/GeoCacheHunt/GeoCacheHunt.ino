@@ -75,6 +75,7 @@ There may not be sufficient room in the PROGRAM or DATA memory to
 enable all these libraries at the same time.  You must have NEO_ON,
 GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 */
+#include <string.h>
 #define NEO_ON 1		// NeoPixelShield
 #define TRM_ON 1		// SerialTerminal
 #define SDC_ON 0		// SecureDigital
@@ -256,24 +257,26 @@ void setNeoPixel(int target, int heading, int distance)
 	//display distance
 	drawDistance(distance);
 	//calculate arrow to show based off heading
-
+	Serial.println("here");
 	// If on top of thing, print that it's here
 	if (distance < 15)
 	{
-		drawArrow(0);
+		Serial.println(distance);
+		drawArrow(9);
 		return;
 	}
-
+	Serial.println("here2");
 	// TODO: If stopped, draw the X
 	if (false)
 	{
 		drawArrow(10);
 		return;
 	}
-
+	Serial.println("here3");
 	// Draw the correct arrow otherwise
-	drawArrow(1 + map(heading, 0, 360, 0, 9));
-
+	int i = 1 + map(heading, 0, 360, 0, 9);
+	drawArrow(i);
+	Serial.println(i);
 }
 
 #endif	// NEO_ON
@@ -630,23 +633,40 @@ void loop(void)
 
 #endif	
 
-	// if button pressed, set new target
-
 	// if GPRMC message (3rd letter = R)
-	while (cstr[3] == 'R')
+	if (cstr[3] == 'R')
 	{
+		char * current;
+		char * current2;
 		// parse message parameters
-		
-		// calculated destination heading
 
+		current = strtok(cstr, ",");
+		//Latitude
+		current = strtok(NULL, ",");
+		//N/S
+		current2 = strtok(NULL, ",");
+		message.north = *current2 == 'N';
+		//get degrees
+		message.latitude = degMin2DecDeg(current2, current);
+		//Longitude
+		current = strtok(NULL, ",");
+		//E/W
+		current2 = strtok(NULL, ",");
+		message.east = *current2 == 'E';
+		//get degrees
+		message.longitude = degMin2DecDeg(current2, current);
+
+		// calculated destination heading
+		heading = calcBearing(message.latitude, message.longitude, GEOLAT0, GEOLON0);
+		
 		// calculated destination distance
+		distance = calcDistance(message.latitude, message.longitude, GEOLAT0, GEOLON0);
 
 #if SDC_ON
 		// write current position to SecureDigital
 		writeToSD(heading, distance);
 #endif
 
-		break;
 	}
 
 #if NEO_ON
@@ -663,7 +683,7 @@ void loop(void)
 		++selectedFlag %= FLAGCOUNT;
 	}
 
-	setNeoPixel(selectedFlag, random(0, 360), random(0, 550));
+	setNeoPixel(selectedFlag, heading, distance);
 
 	print();
 
@@ -870,5 +890,5 @@ void drawDistance(uint32_t d)
 		setPixelColor(3, 1, WHITE);
 	if (d > DIST_20)
 		setPixelColor(3, 0, WHITE);
-#pragma endregion
 }
+#pragma endregion
