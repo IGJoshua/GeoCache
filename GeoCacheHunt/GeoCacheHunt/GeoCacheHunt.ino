@@ -542,8 +542,8 @@ void print()
 	clearScreen();
 }
 
-#if SDC_ON
 void writeToSD(uint16_t bearing, uint32_t distance)
+#if SDC_ON
 {
 	char line[40];
 	char lat[16];
@@ -552,6 +552,10 @@ void writeToSD(uint16_t bearing, uint32_t distance)
 	dtostrf(message.longitude, 8, 6, lng);
 	sprintf(line, "%s,%s,%d.%d\n", lat, lng, bearing, distance);
 	file.write(line, strlen(line));
+}
+#elif
+{
+	// Intentional stub
 }
 #endif
 
