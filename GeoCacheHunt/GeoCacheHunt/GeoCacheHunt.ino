@@ -266,7 +266,7 @@ void setNeoPixel(int target, int heading, int distance, float speed)
 		return;
 	}
 	// TODO: If stopped, draw the X
-	if (speed < 0.01f)
+	if (speed < 0.2f)
 	{
 		drawArrow(10);
 		return;
@@ -639,8 +639,8 @@ void loop(void)
 		// parse message parameters
 
 		current = strtok(cstr, ",");
-		current = strtok(cstr, ",");
-		current = strtok(cstr, ",");
+		current = strtok(NULL, ",");
+		current = strtok(NULL, ",");
 		//Latitude
 		current = strtok(NULL, ",");
 		Serial.println(current);
