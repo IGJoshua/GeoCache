@@ -678,8 +678,8 @@ void loop(void)
 		speed = strtod(msg[7], NULL);
 		float head = strtod(msg[8], NULL);
 
-		message.latitude = strtod(degMin2DecDeg(msg[3], msg[4]), NULL);
-		message.longitude = strtod(degMin2DecDeg(msg[5], msg[6]), NULL);
+		message.latitude = degMin2DecDeg(msg[3], msg[4]);
+		message.longitude = degMin2DecDeg(msg[5], msg[6]);
 
 		heading = calcBearing(message.latitude, message.longitude, GEOLAT0, GEOLON0) - head;
 
