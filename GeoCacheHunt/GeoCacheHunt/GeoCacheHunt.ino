@@ -266,7 +266,7 @@ void setNeoPixel(int target, int heading, int distance, float speed)
 		return;
 	}
 	// TODO: If stopped, draw the X
-	if (speed < 0.01f)
+	if (speed < 0.2f)
 	{
 		drawArrow(10);
 		return;
