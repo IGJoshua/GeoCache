@@ -192,7 +192,7 @@ float degMin2DecDeg(char *cind, char *ccor)
 	// TODO: For real this time
 	float degmin = strtod(ccor, NULL);
 	float degrees = (int)(degmin / 100.0f);
-	return(degrees + ((degmin - (degrees * 100)) / 60.0f));
+	return((degrees + ((degmin - (degrees * 100)) / 60.0f)) * (*cind == 'W' || *cind == 'S' ? -1.0f : 1.0f));
 }
 
 /**************************************************
@@ -668,18 +668,19 @@ void loop(void)
 		char *msg[9];
 
 		msg[0] = strtok(cstr, ",");
-		Serial.println(msg[0]);
 		for (int i = 1; i < 9; ++i)
 		{
 			msg[i] = strtok(NULL, ",");
-			Serial.println(msg[i]);
 		}
 
 		speed = strtod(msg[7], NULL);
 		float head = strtod(msg[8], NULL);
 
-		message.latitude = degMin2DecDeg(msg[3], msg[4]);
-		message.longitude = degMin2DecDeg(msg[5], msg[6]);
+		message.latitude = degMin2DecDeg(msg[4], msg[3]);
+		message.longitude = degMin2DecDeg(msg[6], msg[5]);
+
+		Serial.println(message.latitude);
+		Serial.println(message.longitude);
 
 		heading = calcBearing(message.latitude, message.longitude, GEOLAT0, GEOLON0) - head;
 
