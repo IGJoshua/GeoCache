@@ -253,10 +253,10 @@ float calcBearing(float flat1, float flon1, float flat2, float flon2)
 {
 	//DONE
 	// If this thing doesn't work, keep in mind that we might need to convert to radians here...
-	flat1 *= deg2rad;
-	flat2 *= deg2rad;
-	flon1 *= deg2rad;
-	flon2 *= deg2rad;
+	//flat1 = flat1 * 57296 / 1000;
+	//flat2 = flat2 * 57296 / 1000;
+	//flon1 = flon1 * 57296 / 1000;
+	//flon2 = flon2 * 57296 / 1000;
 	return(atan2(sin(flon1 - flon2) * cos(flat2), cos(flat1) * sin(flat2) - sin(flat1) * cos(flon1 - flon2))) * rad2deg;
 }
 
@@ -285,7 +285,7 @@ void setNeoPixel(int target, int heading, int distance, float speed)
 	{
 		drawArrow(9);
 		return;
-	}
+	}*/
 	// TODO: If stopped, draw the X
 	if (speed < 0.2f)
 	{
@@ -703,11 +703,15 @@ void loop(void)
 		Serial.println(message.latitude);
 		Serial.println(message.longitude);
 
+
+
 		switch (selectedFlag)
 		{
 		case 0:
 			{
-				heading = calcBearing(message.latitude, message.longitude, GEOLAT0, GEOLON0) - head;
+				heading = (calcBearing(message.latitude, message.longitude, GEOLAT0, GEOLON0) - head);
+				if (heading < 0)
+					heading += 360;
 				distance = calcDistance(message.latitude, message.longitude, GEOLAT0, GEOLON0);
 			} break;
 		case 1:
@@ -729,7 +733,8 @@ void loop(void)
 
 		// write current position to SecureDigital
 		writeToSD(heading, distance);
-
+		Serial.println("Heading");
+		Serial.println(heading);
 	}
 
 #if NEO_ON
