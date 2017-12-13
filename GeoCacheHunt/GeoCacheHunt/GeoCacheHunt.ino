@@ -213,6 +213,7 @@ distance in feet (3959 earth radius in miles * 5280 feet per mile)
 float calcDistance(float flat1, float flon1, float flat2, float flon2)
 {
 	//DONE
+	// If this thing doesn't work, keep in mind that we might need to convert to radians here...
 	float distance = 0.0;
 	float dLon = abs(flon1 - flon2);
 	float dLat = abs(flat1 - flat2);
@@ -236,6 +237,7 @@ angle in decimal degrees from magnetic north (NOTE: arc tangent returns range of
 float calcBearing(float flat1, float flon1, float flat2, float flon2)
 {
 	//DONE
+	// If this thing doesn't work, keep in mind that we might need to convert to radians here...
 	return(atan2(sin(flon1 - flon2) * cos(flat2), cos(flat1) * sin(flat2) - sin(flat1) * cos(flon1 - flon2)));
 }
 
