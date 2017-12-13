@@ -230,8 +230,8 @@ float calcDistance(float flat1, float flon1, float flat2, float flon2)
 	float distance = 0.0;
 	float dLon = abs(flon1 - flon2);
 	float dLat = abs(flat1 - flat2);
-	float a = (sin((dLat / 2) * deg2rad)) * (sin((dLat / 2) * deg2rad)) + cos(flat1 * deg2rad) * cos(flat2 * deg2rad) * (sin((dLon / 2) * deg2rad)) * (sin((dLon / 2) * deg2rad));
-	float c = 2 * atan2(sqrt(a), sqrt(1 - a)) * rad2deg;
+	float a = (sin((dLat / 2))) * (sin((dLat / 2))) + cos(flat1) * cos(flat2) * (sin((dLon / 2))) * (sin((dLon / 2)));
+	float c = 2 * atan2(sqrt(a), sqrt(1 - a));
 	return(c * 6371);
 }
 
@@ -251,10 +251,10 @@ float calcBearing(float flat1, float flon1, float flat2, float flon2)
 {
 	//DONE
 	// If this thing doesn't work, keep in mind that we might need to convert to radians here...
-	flat1 = flat1 * 57296 / 1000;
-	flat2 = flat2 * 57296 / 1000;
-	flon1 = flon1 * 57296 / 1000;
-	flon2 = flon2 * 57296 / 1000;
+	//flat1 = flat1 * 57296 / 1000;
+	//flat2 = flat2 * 57296 / 1000;
+	//flon1 = flon1 * 57296 / 1000;
+	//flon2 = flon2 * 57296 / 1000;
 	return(atan2(sin(flon1 - flon2) * cos(flat2), cos(flat1) * sin(flat2) - sin(flat1) * cos(flon1 - flon2))) * 1000/57296;
 }
 
@@ -279,11 +279,11 @@ void setNeoPixel(int target, int heading, int distance, float speed)
 	drawDistance(distance);
 	//calculate arrow to show based off heading
 	// If on top of thing, print that it's here
-	if (distance < 15)
+	/*if (distance < 15)
 	{
 		drawArrow(9);
 		return;
-	}
+	}*/
 	// TODO: If stopped, draw the X
 	if (speed < 0.2f)
 	{
@@ -701,11 +701,15 @@ void loop(void)
 		Serial.println(message.latitude);
 		Serial.println(message.longitude);
 
+
+
 		switch (selectedFlag)
 		{
 		case 0:
 			{
-				heading = calcBearing(message.latitude, message.longitude, GEOLAT0, GEOLON0) - head;
+				heading = (calcBearing(message.latitude, message.longitude, GEOLAT0, GEOLON0) - head);
+				if (heading < 0)
+					heading += 360;
 				distance = calcDistance(message.latitude, message.longitude, GEOLAT0, GEOLON0);
 			} break;
 		case 1:
@@ -727,7 +731,8 @@ void loop(void)
 
 		// write current position to SecureDigital
 		writeToSD(heading, distance);
-
+		Serial.println("Heading");
+		Serial.println(heading);
 	}
 
 #if NEO_ON
