@@ -78,7 +78,7 @@ GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 #include <string.h>
 #define NEO_ON 1		// NeoPixelShield
 #define TRM_ON 1		// SerialTerminal
-#define SDC_ON 1		// SecureDigital
+#define SDC_ON 0		// SecureDigital
 #define GPS_ON 1		// Live GPS Message (off = simulated)
 
 // define pin usage
@@ -219,22 +219,34 @@ distance in feet (3959 earth radius in miles * 5280 feet per mile)
 **************************************************/
 float rad2deg = 57296.0f / 1000.0f;
 float deg2rad = 1000.0f / 57296.0f;
-float earthRad = 3959 * 5280;
+uint32_t earthRad = 20903520;
 float calcDistance(float flat1, float flon1, float flat2, float flon2)
 {
 	//DONE
 	// If this thing doesn't work, keep in mind that we might need to convert to radians here...
-	float distance = 0.0;
-	float phi1 = flat1 * deg2rad;
-	float phi2 = flat2 * deg2rad;
-	float dphi = (flat1 - flat2) * deg2rad;
-	float dlambda = (flon1 - flon2) * deg2rad;
-	float a = sin(dphi * 0.5f) * sin(dphi * 0.5f) +
-		cos(phi1) * cos(phi2) *
-		sin(dlambda * 0.5f) * sin(dlambda * 0.5f);
-	float c = 2 * atan2(sqrt(a), sqrt(1 - a));
-	float d = c * earthRad;
-	return(abs(d));
+	float lat1 = flat1 * deg2rad;
+	float lat2 = flat2 * deg2rad;
+	float dlat = (flat1 - flat2) * deg2rad;
+	float dlon = (flon1 - flon2) * deg2rad;
+	float a = sin(dlat * 0.5f) * sin(dlat * 0.5f) +
+		cos(lat1) * cos(lat2) *
+		sin(dlon * 0.5f) * sin(dlon * 0.5f);
+	float c = 2.0f * atan2(sqrt(a), sqrt(1 - a));
+	float d = earthRad * c;
+	Serial.print(flat1, 6);
+	Serial.print(" ");
+	Serial.print(flon1, 6);
+	Serial.print(" ");
+	Serial.print(flat2, 6);
+	Serial.print(" ");
+	Serial.println(flon2, 6);
+	Serial.print(a, 6);
+	Serial.print(" ");
+	Serial.println(c, 6);
+	Serial.print("Distance: ");
+	Serial.println(d, 6);
+	Serial.println(earthRad);
+	return(d);
 }
 
 /**************************************************
@@ -261,7 +273,6 @@ float calcBearing(float flat1, float flon1, float flat2, float flon2)
 	float x = cos(flat1) * sin(flat2) -
 		sin(flat1) * cos(flat2) * cos(flon2 - flon1);
 	float bearing = atan2(y, x) * rad2deg;
-	Serial.println(bearing, 6);
 	return(bearing);
 //	return(atan2(sin((flon1 - flon2) * deg2rad) * cos(flat2 * deg2rad), cos(flat1 * deg2rad) * sin(flat2 * deg2rad) - sin(flat1 * deg2rad) * cos((flon1 - flon2) * deg2rad)) * rad2deg);
 }
@@ -742,8 +753,6 @@ void loop(void)
 		message.latitude = degMin2DecDeg(msg[4], msg[3]);
 		message.longitude = degMin2DecDeg(msg[6], msg[5]);
 
-		Serial.println(message.latitude);
-		Serial.println(message.longitude);
 
 
 
@@ -773,8 +782,6 @@ void loop(void)
 
 		// write current position to SecureDigital
 		writeToSD(heading, distance);
-		Serial.println("Heading");
-		Serial.println(heading);
 	}
 
 #if NEO_ON
