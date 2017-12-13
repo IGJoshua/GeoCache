@@ -219,20 +219,22 @@ distance in feet (3959 earth radius in miles * 5280 feet per mile)
 **************************************************/
 float deg2rad = 57296 / 1000;
 float rad2deg = 1000 / 57296;
+float earthRad = 3959 * 5280;
 float calcDistance(float flat1, float flon1, float flat2, float flon2)
 {
 	//DONE
 	// If this thing doesn't work, keep in mind that we might need to convert to radians here...
-	flat1 *= deg2rad;
-	flat2 *= deg2rad;
-	flon1 *= deg2rad;
-	flon2 *= deg2rad;
 	float distance = 0.0;
-	float dLon = abs(flon1 - flon2);
-	float dLat = abs(flat1 - flat2);
-	float a = (sin(dLat / 2)) * (sin(dLat / 2)) + cos(flat1) * cos(flat2) * (sin(dLon / 2)) * (sin(dLon / 2));
-	float c = 2 * atan2(sqrt(a), sqrt(1 - a)) * rad2deg;
-	return(c * (3959 * 5280));
+	float phi1 = flat1 * deg2rad;
+	float phi2 = flat2 * deg2rad;
+	float dphi = (flat1 - flat2) * deg2rad;
+	float dlambda = (flon1 - flon2) * deg2rad;
+	float a = sin(dphi * 0.5f) * sin(dphi * 0.5f) +
+		cos(phi1) * cos(phi2) *
+		sin(dlambda * 0.5f) * sin(dlambda * 0.5f);
+	float c = 2 * atan2(sqrt(a), sqrt(1 - a));
+	float d = c * earthRad;
+	return(d);
 }
 
 /**************************************************
@@ -279,7 +281,7 @@ void setNeoPixel(int target, int heading, int distance, float speed)
 	drawDistance(distance);
 	//calculate arrow to show based off heading
 	// If on top of thing, print that it's here
-	if (distance < 15)
+	/*if (distance < 15)
 	{
 		drawArrow(9);
 		return;
@@ -289,7 +291,7 @@ void setNeoPixel(int target, int heading, int distance, float speed)
 	{
 		drawArrow(10);
 		return;
-	}
+	}*/
 	// Draw the correct arrow otherwise
 	drawArrow(1 + map(heading, 0, 360, 0, 9));
 }
