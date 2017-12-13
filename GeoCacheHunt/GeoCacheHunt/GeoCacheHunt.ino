@@ -112,6 +112,7 @@ char cstr[GPS_RX_BUFSIZ];
 uint8_t target = 0;		// target number
 float heading = 0.0;	// target heading
 float distance = 0.0;	// target distance
+uint8_t selectedFlag = 0;
 GPSMessage message;
 #define PITCH 8
 
@@ -141,6 +142,12 @@ flags located on Full Sail campus.
 */
 #define GEOLAT0 28.594532
 #define GEOLON0 -81.304437
+#define GEOLAT1 28.594532
+#define GEOLON1 -81.304437
+#define GEOLAT2 28.594532
+#define GEOLON2 -81.304437
+#define GEOLAT3 28.594532
+#define GEOLON3 -81.304437
 
 #if GPS_ON
 /*
@@ -684,9 +691,29 @@ void loop(void)
 		Serial.println(message.latitude);
 		Serial.println(message.longitude);
 
-		heading = calcBearing(message.latitude, message.longitude, GEOLAT0, GEOLON0) - head;
-
-		distance = calcDistance(message.latitude, message.longitude, GEOLAT0, GEOLON0);
+		switch (selectedFlag)
+		{
+		case 0:
+			{
+				heading = calcBearing(message.latitude, message.longitude, GEOLAT0, GEOLON0) - head;
+				distance = calcDistance(message.latitude, message.longitude, GEOLAT0, GEOLON0);
+			} break;
+		case 1:
+			{
+				heading = calcBearing(message.latitude, message.longitude, GEOLAT1, GEOLON1) - head;
+				distance = calcDistance(message.latitude, message.longitude, GEOLAT1, GEOLON1);
+			}
+		case 2:
+			{
+				heading = calcBearing(message.latitude, message.longitude, GEOLAT2, GEOLON2) - head;
+				distance = calcDistance(message.latitude, message.longitude, GEOLAT2, GEOLON2);
+			}
+		case 3:
+			{
+				heading = calcBearing(message.latitude, message.longitude, GEOLAT3, GEOLON3) - head;
+				distance = calcDistance(message.latitude, message.longitude, GEOLAT3, GEOLON3);
+			}
+		}
 
 		// write current position to SecureDigital
 		writeToSD(heading, distance);
@@ -698,7 +725,6 @@ void loop(void)
 //	setNeoPixel(target, heading, distance);
 
 	static unsigned long timestamp = 0;
-	static uint8_t selectedFlag = 0;
 	//print to the neo pixel if the time has expired
 	strip.setBrightness(analogRead(Brightness) / 4);
 
