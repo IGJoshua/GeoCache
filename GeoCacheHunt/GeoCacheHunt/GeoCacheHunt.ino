@@ -257,7 +257,12 @@ float calcBearing(float flat1, float flon1, float flat2, float flon2)
 	//flat2 = flat2 * 57296 / 1000;
 	//flon1 = flon1 * 57296 / 1000;
 	//flon2 = flon2 * 57296 / 1000;
-	return(atan2(sin(flon1 - flon2) * cos(flat2), cos(flat1) * sin(flat2) - sin(flat1) * cos(flon1 - flon2))) * rad2deg;
+	float y = sin((flon2 - flon1) * deg2rad) * cos(flat2 * deg2rad);
+	float x = cos(flat1 * deg2rad) * sin(flat2 * deg2rad) -
+		sin(flat1 * deg2rad) * cos(flat2 * deg2rad) * cos((flon2 - flon1) * deg2rad);
+	float bearing = atan2(y, x) * rad2deg;
+	return(bearing);
+//	return(atan2(sin(flon1 - flon2) * cos(flat2), cos(flat1) * sin(flat2) - sin(flat1) * cos(flon1 - flon2))) * rad2deg;
 }
 
 /*************************************************
