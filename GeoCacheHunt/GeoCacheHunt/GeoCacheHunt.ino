@@ -286,11 +286,11 @@ void setNeoPixel(int target, int heading, int distance, float speed)
 	drawDistance(distance);
 	//calculate arrow to show based off heading
 	// If on top of thing, print that it's here
-	if (distance < 15)
+/*	if (distance < 15)
 	{
 		drawArrow(9);
 		return;
-	}
+	}*/
 	// TODO: If stopped, draw the X
 	if (speed < 0.2f)
 	{
