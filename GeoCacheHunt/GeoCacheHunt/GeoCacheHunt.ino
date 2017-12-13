@@ -227,14 +227,14 @@ float calcDistance(float flat1, float flon1, float flat2, float flon2)
 	float distance = 0.0;
 	float phi1 = flat1 * deg2rad;
 	float phi2 = flat2 * deg2rad;
-	float dphi = abs(flat1 - flat2) * deg2rad;
-	float dlambda = abs(flon1 - flon2) * deg2rad;
+	float dphi = (flat1 - flat2) * deg2rad;
+	float dlambda = (flon1 - flon2) * deg2rad;
 	float a = sin(dphi * 0.5f) * sin(dphi * 0.5f) +
 		cos(phi1) * cos(phi2) *
 		sin(dlambda * 0.5f) * sin(dlambda * 0.5f);
 	float c = 2 * atan2(sqrt(a), sqrt(1 - a));
 	float d = c * earthRad;
-	return(d);
+	return(abs(d));
 }
 
 /**************************************************
