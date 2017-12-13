@@ -78,8 +78,8 @@ GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 #include <string.h>
 #define NEO_ON 1		// NeoPixelShield
 #define TRM_ON 1		// SerialTerminal
-#define SDC_ON 0		// SecureDigital
-#define GPS_ON 0		// Live GPS Message (off = simulated)
+#define SDC_ON 1		// SecureDigital
+#define GPS_ON 1		// Live GPS Message (off = simulated)
 
 // define pin usage
 #define NEO_TX	6		// NEO transmit
@@ -612,7 +612,7 @@ void writeToSD(uint16_t bearing, uint32_t distance)
 	char lng[16];
 	dtostrf(message.latitude, 8, 6, lat);
 	dtostrf(message.longitude, 8, 6, lng);
-	sprintf(line, "%s,%s,%d.%d\n", lat, lng, bearing, distance);
+	sprintf(line, "%s,%s,%d.%d\n", lng, lat, bearing, distance);
 	file.write(line, strlen(line));
 	file.flush();
 }
