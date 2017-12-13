@@ -78,8 +78,8 @@ GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 #include <string.h>
 #define NEO_ON 1		// NeoPixelShield
 #define TRM_ON 1		// SerialTerminal
-#define SDC_ON 1		// SecureDigital
-#define GPS_ON 1		// Live GPS Message (off = simulated)
+#define SDC_ON 0		// SecureDigital
+#define GPS_ON 0		// Live GPS Message (off = simulated)
 
 // define pin usage
 #define NEO_TX	6		// NEO transmit
@@ -217,8 +217,8 @@ flat2, flon2 = target latitude and longitude coordinate in decimal degrees
 Return:
 distance in feet (3959 earth radius in miles * 5280 feet per mile)
 **************************************************/
-float deg2rad = 57296.0f / 1000.0f;
-float rad2deg = 1000.0f / 57296.0f;
+float rad2deg = 57296.0f / 1000.0f;
+float deg2rad = 1000.0f / 57296.0f;
 float earthRad = 3959 * 5280;
 float calcDistance(float flat1, float flon1, float flat2, float flon2)
 {
@@ -261,6 +261,7 @@ float calcBearing(float flat1, float flon1, float flat2, float flon2)
 	float x = cos(flat1) * sin(flat2) -
 		sin(flat1) * cos(flat2) * cos(flon2 - flon1);
 	float bearing = atan2(y, x) * rad2deg;
+	Serial.println(bearing, 6);
 	return(bearing);
 //	return(atan2(sin((flon1 - flon2) * deg2rad) * cos(flat2 * deg2rad), cos(flat1 * deg2rad) * sin(flat2 * deg2rad) - sin(flat1 * deg2rad) * cos((flon1 - flon2) * deg2rad)) * rad2deg);
 }
