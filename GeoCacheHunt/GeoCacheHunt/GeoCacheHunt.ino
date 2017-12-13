@@ -217,8 +217,8 @@ flat2, flon2 = target latitude and longitude coordinate in decimal degrees
 Return:
 distance in feet (3959 earth radius in miles * 5280 feet per mile)
 **************************************************/
-float deg2rad = 57296 / 1000;
-float rad2deg = 1000 / 57296;
+float deg2rad = 57296.0f / 1000.0f;
+float rad2deg = 1000.0f / 57296.0f;
 float earthRad = 3959 * 5280;
 float calcDistance(float flat1, float flon1, float flat2, float flon2)
 {
@@ -253,16 +253,16 @@ float calcBearing(float flat1, float flon1, float flat2, float flon2)
 {
 	//DONE
 	// If this thing doesn't work, keep in mind that we might need to convert to radians here...
-	//flat1 = flat1 * 57296 / 1000;
-	//flat2 = flat2 * 57296 / 1000;
-	//flon1 = flon1 * 57296 / 1000;
-	//flon2 = flon2 * 57296 / 1000;
-	float y = sin((flon2 - flon1) * deg2rad) * cos(flat2 * deg2rad);
-	float x = cos(flat1 * deg2rad) * sin(flat2 * deg2rad) -
-		sin(flat1 * deg2rad) * cos(flat2 * deg2rad) * cos((flon2 - flon1) * deg2rad);
+	flat1 = flat1 * deg2rad;
+	flat2 = flat2 * deg2rad;
+	flon1 = flon1 * deg2rad;
+	flon2 = flon2 * deg2rad;
+	float y = sin(flon2 - flon1) * cos(flat2);
+	float x = cos(flat1) * sin(flat2) -
+		sin(flat1) * cos(flat2) * cos(flon2 - flon1);
 	float bearing = atan2(y, x) * rad2deg;
 	return(bearing);
-//	return(atan2(sin(flon1 - flon2) * cos(flat2), cos(flat1) * sin(flat2) - sin(flat1) * cos(flon1 - flon2))) * rad2deg;
+//	return(atan2(sin((flon1 - flon2) * deg2rad) * cos(flat2 * deg2rad), cos(flat1 * deg2rad) * sin(flat2 * deg2rad) - sin(flat1 * deg2rad) * cos((flon1 - flon2) * deg2rad)) * rad2deg);
 }
 
 /*************************************************
@@ -292,14 +292,50 @@ void setNeoPixel(int target, int heading, int distance, float speed)
 		return;
 	}*/
 	// TODO: If stopped, draw the X
-	if (speed < 0.2f)
+/*	if (speed < 0.2f)
 	{
 		drawArrow(10);
 		return;
-	}
+	}*/
 	// Draw the correct arrow otherwise
-	drawArrow(1 + map(heading, 0, 360, 0, 9));
+	if (heading < 23)
+	{
+		drawArrow(1);
+	}
+	else if (heading < 68)
+	{
+		drawArrow(2);
+	}
+	else if (heading < 113)
+	{
+		drawArrow(3);
+	}
+	else if (heading < 158)
+	{
+		drawArrow(4);
+	}
+	else if (heading < 203)
+	{
+		drawArrow(5);
+	}
+	else if (heading < 248)
+	{
+		drawArrow(6);
+	}
+	else if (heading < 293)
+	{
+		drawArrow(7);
+	}
+	else if (heading < 338)
+	{
+		drawArrow(8);
+	}
+	else
+	{
+		drawArrow(1);
+	}
 }
+
 
 #endif	// NEO_ON
 
@@ -721,17 +757,17 @@ void loop(void)
 			{
 				heading = fmod(calcBearing(message.latitude, message.longitude, GEOLAT1, GEOLON1) - head + 360, 360);
 				distance = calcDistance(message.latitude, message.longitude, GEOLAT1, GEOLON1);
-			}
+			} break;
 		case 2:
 			{
 				heading = fmod(calcBearing(message.latitude, message.longitude, GEOLAT2, GEOLON2) - head + 360, 360);
 				distance = calcDistance(message.latitude, message.longitude, GEOLAT2, GEOLON2);
-			}
+			} break;
 		case 3:
 			{
 				heading = fmod(calcBearing(message.latitude, message.longitude, GEOLAT3, GEOLON3) - head + 360, 360);
 				distance = calcDistance(message.latitude, message.longitude, GEOLAT3, GEOLON3);
-			}
+			} break;
 		}
 
 		// write current position to SecureDigital
