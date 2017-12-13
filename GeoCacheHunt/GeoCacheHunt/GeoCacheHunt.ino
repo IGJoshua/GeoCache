@@ -223,16 +223,16 @@ float calcDistance(float flat1, float flon1, float flat2, float flon2)
 {
 	//DONE
 	// If this thing doesn't work, keep in mind that we might need to convert to radians here...
-	//flat1 = flat1 * deg2rad;
-	//flat2 = flat2 * deg2rad;
-	//flon1 = flon1 * deg2rad;
-	//flon2 = flon2 * deg2rad;
+	flat1 *= deg2rad;
+	flat2 *= deg2rad;
+	flon1 *= deg2rad;
+	flon2 *= deg2rad;
 	float distance = 0.0;
 	float dLon = abs(flon1 - flon2);
 	float dLat = abs(flat1 - flat2);
-	float a = (sin((dLat / 2) * deg2rad)) * (sin((dLat / 2) * deg2rad)) + cos(flat1 * deg2rad) * cos(flat2 * deg2rad) * (sin((dLon / 2) * deg2rad)) * (sin((dLon / 2) * deg2rad));
+	float a = (sin(dLat / 2)) * (sin(dLat / 2)) + cos(flat1) * cos(flat2) * (sin(dLon / 2)) * (sin(dLon / 2));
 	float c = 2 * atan2(sqrt(a), sqrt(1 - a)) * rad2deg;
-	return(c * 6371);
+	return(c * (3959 * 5280));
 }
 
 /**************************************************
@@ -251,11 +251,11 @@ float calcBearing(float flat1, float flon1, float flat2, float flon2)
 {
 	//DONE
 	// If this thing doesn't work, keep in mind that we might need to convert to radians here...
-	flat1 = flat1 * 57296 / 1000;
-	flat2 = flat2 * 57296 / 1000;
-	flon1 = flon1 * 57296 / 1000;
-	flon2 = flon2 * 57296 / 1000;
-	return(atan2(sin(flon1 - flon2) * cos(flat2), cos(flat1) * sin(flat2) - sin(flat1) * cos(flon1 - flon2))) * 1000/57296;
+	flat1 *= deg2rad;
+	flat2 *= deg2rad;
+	flon1 *= deg2rad;
+	flon2 *= deg2rad;
+	return(atan2(sin(flon1 - flon2) * cos(flat2), cos(flat1) * sin(flat2) - sin(flat1) * cos(flon1 - flon2))) * rad2deg;
 }
 
 /*************************************************
