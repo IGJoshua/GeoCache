@@ -714,24 +714,22 @@ void loop(void)
 		{
 		case 0:
 			{
-				heading = (calcBearing(message.latitude, message.longitude, GEOLAT0, GEOLON0) - head);
-				if (heading < 0)
-					heading += 360;
+				heading = fmod(calcBearing(message.latitude, message.longitude, GEOLAT0, GEOLON0) - head + 360, 360);
 				distance = calcDistance(message.latitude, message.longitude, GEOLAT0, GEOLON0);
 			} break;
 		case 1:
 			{
-				heading = calcBearing(message.latitude, message.longitude, GEOLAT1, GEOLON1) - head;
+				heading = fmod(calcBearing(message.latitude, message.longitude, GEOLAT1, GEOLON1) - head + 360, 360);
 				distance = calcDistance(message.latitude, message.longitude, GEOLAT1, GEOLON1);
 			}
 		case 2:
 			{
-				heading = calcBearing(message.latitude, message.longitude, GEOLAT2, GEOLON2) - head;
+				heading = fmod(calcBearing(message.latitude, message.longitude, GEOLAT2, GEOLON2) - head + 360, 360);
 				distance = calcDistance(message.latitude, message.longitude, GEOLAT2, GEOLON2);
 			}
 		case 3:
 			{
-				heading = calcBearing(message.latitude, message.longitude, GEOLAT3, GEOLON3) - head;
+				heading = fmod(calcBearing(message.latitude, message.longitude, GEOLAT3, GEOLON3) - head + 360, 360);
 				distance = calcDistance(message.latitude, message.longitude, GEOLAT3, GEOLON3);
 			}
 		}
