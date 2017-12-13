@@ -217,20 +217,22 @@ flat2, flon2 = target latitude and longitude coordinate in decimal degrees
 Return:
 distance in feet (3959 earth radius in miles * 5280 feet per mile)
 **************************************************/
+float deg2rad = 57296 / 1000;
+float rad2deg = 1000 / 57296;
 float calcDistance(float flat1, float flon1, float flat2, float flon2)
 {
 	//DONE
 	// If this thing doesn't work, keep in mind that we might need to convert to radians here...
-	flat1 = flat1 * 57296 / 1000;
-	flat2 = flat2 * 57296 / 1000;
-	flon1 = flon1 * 57296 / 1000;
-	flon2 = flon2 * 57296 / 1000;
+	//flat1 = flat1 * deg2rad;
+	//flat2 = flat2 * deg2rad;
+	//flon1 = flon1 * deg2rad;
+	//flon2 = flon2 * deg2rad;
 	float distance = 0.0;
 	float dLon = abs(flon1 - flon2);
 	float dLat = abs(flat1 - flat2);
-	float a = (sin(dLat / 2)) * (sin(dLat / 2)) + cos(flat1) * cos(flat2) * (sin(dLon / 2)) * (sin(dLon / 2));
-	float c = 2 * atan2(sqrt(a), sqrt(1 - a));
-	return(c * 6371 * 1000/57296);
+	float a = (sin((dLat / 2) * deg2rad)) * (sin((dLat / 2) * deg2rad)) + cos(flat1 * deg2rad) * cos(flat2 * deg2rad) * (sin((dLon / 2) * deg2rad)) * (sin((dLon / 2) * deg2rad));
+	float c = 2 * atan2(sqrt(a), sqrt(1 - a)) * rad2deg;
+	return(c * 6371);
 }
 
 /**************************************************
