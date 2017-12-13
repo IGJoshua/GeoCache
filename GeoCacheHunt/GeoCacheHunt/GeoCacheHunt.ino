@@ -140,14 +140,14 @@ in the parking lot just outside the front entrance of FS3B-116.
 On GeoCache day, you will be given waypoints in Decimal Degrees format for 4x
 flags located on Full Sail campus.
 */
-#define GEOLAT0 28.594532
-#define GEOLON0 -81.304437
-#define GEOLAT1 28.594532
-#define GEOLON1 -81.304437
-#define GEOLAT2 28.594532
-#define GEOLON2 -81.304437
-#define GEOLAT3 28.594532
-#define GEOLON3 -81.304437
+#define GEOLAT0 28.5962
+#define GEOLON0 -81.30538
+#define GEOLAT1 28.59671
+#define GEOLON1 -81.30205
+#define GEOLAT2 28.59208
+#define GEOLON2 -81.30407
+#define GEOLAT3 28.59544
+#define GEOLON3 -81.30397
 
 #if GPS_ON
 /*
