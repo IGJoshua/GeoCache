@@ -78,7 +78,7 @@ GPS_ON and SDC_ON during the actual GeoCache Flag Hunt on Finals Day.
 #include <string.h>
 #define NEO_ON 1		// NeoPixelShield
 #define TRM_ON 1		// SerialTerminal
-#define SDC_ON 0		// SecureDigital
+#define SDC_ON 1		// SecureDigital
 #define GPS_ON 1		// Live GPS Message (off = simulated)
 
 // define pin usage
@@ -233,19 +233,6 @@ float calcDistance(float flat1, float flon1, float flat2, float flon2)
 		sin(dlon * 0.5f) * sin(dlon * 0.5f);
 	float c = 2.0f * atan2(sqrt(a), sqrt(1 - a));
 	float d = earthRad * c;
-	Serial.print(flat1, 6);
-	Serial.print(" ");
-	Serial.print(flon1, 6);
-	Serial.print(" ");
-	Serial.print(flat2, 6);
-	Serial.print(" ");
-	Serial.println(flon2, 6);
-	Serial.print(a, 6);
-	Serial.print(" ");
-	Serial.println(c, 6);
-	Serial.print("Distance: ");
-	Serial.println(d, 6);
-	Serial.println(earthRad);
 	return(d);
 }
 
